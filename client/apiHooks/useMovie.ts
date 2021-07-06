@@ -11,7 +11,7 @@ export type MovieType = {
     imdb: ImdbRating
     tomatoes: RottenTomatesRating
     genres: string[]
-    directors: string[]
+    directors?: string[]
     writers?: string[]
 }
 

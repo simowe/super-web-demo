@@ -1,10 +1,13 @@
-import useSWR, { cache, SWRConfiguration } from "swr"
+import useSWR, { cache, mutate, SWRConfiguration } from "swr"
 
 export const swrProps: SWRConfiguration = {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
 }
 
+/*
+    This is doomed
+*/
 export function useSWRCached<T>(
     url: string | null,
     fetcher: (url: string) => Promise<T>,
@@ -24,7 +27,7 @@ export function useSWRCached<T>(
 }
 
 export async function fetchJson(url: string) {
-    await delay(2000)
+    // await delay(2000)
 
     return fetch(url).then((result) => result.json())
 }

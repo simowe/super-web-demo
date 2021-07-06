@@ -60,9 +60,9 @@ const TitleBar: FC<MovieProps> = ({ movie }) => {
             <div className={s.titleBar__sub}>
                 <div className={s.titleBar__subSegment}>{movie.year}</div>
                 <div className={s.titleBar__subSegment}>
-                    {movie.rated ?? "U"}
+                    {movie.rated ?? "Unrated"}
                 </div>
-                <div className={s.titleBar__subSegment}>{movie.runtime}</div>
+                <div className={s.titleBar__subSegment}>{movie.runtime}min</div>
             </div>
         </div>
     )
@@ -80,7 +80,7 @@ const MovieDescription: FC<MovieProps> = ({ movie }) => {
             <div className={s.genres}>{genres}</div>
             <div className={s.plot}>{movie.plot}</div>
             <ImdbRating movie={movie} />
-            <Credit title="Director" name={movie.directors.join(", ")} />
+            <Credit title="Director" name={movie.directors?.join(", ")} />
             <Credit title="Writer" name={movie.writers?.join(", ")} />
         </div>
     )
