@@ -2,11 +2,10 @@ import { MovieType, useMovie } from "client/apiHooks/useMovie"
 import { useMovies } from "client/apiHooks/useMovies"
 import NavigationBar from "client/components/NavigationBar"
 import s from "client/styles/MoviesPage.module.scss"
-import { debounce } from "lodash"
+import { useQueryParameterState } from "client/utils/useQueryParameterState"
 import Head from "next/head"
 import Link from "next/link"
-import { NextRouter, useRouter } from "next/router"
-import { FC, Fragment, useEffect, useState } from "react"
+import { FC, Fragment } from "react"
 
 /*
 
@@ -16,29 +15,33 @@ Normalization:
     useSWR doesn't know what data is fresh and what is stale.
     Maybe just accept the revalidation pattern, and abandon normalization
 
+Instant page load:
+    It's pretty sweet to have the instant load. Possible solutions
+
+    * Data link
+        * Pass the initialValue when linking to the page
+    * Set value directly in swr cache.
+        * It's a bit awkward because some component needs to run an updateCache function with sideeffects
+        * How to reuse same cache key in a clean way. Can become a bit cumbersome to generate cache keys in multiple places.
+        * Separate function for cache setting for every endpoint? Meaning multiple hooks: useMovie, useCacheMovie. Has to create a bunch of extra functions to hide the dealing with cache keys.
+    
+
 Search input with debounce:
     The flow is a bit awkward.
     Try to find a smoother information flow.
-    * consider Recoil, MobX, React Hook Form
+    * consider Recoil, React Hook Form, RxJS, MobX
 
 */
 
 const MoviesPage: FC = () => {
-    const [searchQuery, setSearchQuery] = useState(
-        getQueryParameter("search") ?? ""
-    )
-
-    const router = useRouter()
-
-    useEffect(() => {
-        replaceQueryParameter(router, "search", searchQuery)
-    }, [searchQuery])
-
-    const debouncedSet = debounce(setSearchQuery, 500)
+    const [searchQuery, setSearchQuery] = useQueryParameterState("search")
 
     return (
         <Fragment>
-            <NavigationBar initialValue={searchQuery} onChange={debouncedSet} />
+            <NavigationBar
+                initialValue={searchQuery}
+                onSearch={setSearchQuery}
+            />
             <main className={s.main}>
                 <Head>
                     <title>Movies</title>
@@ -92,25 +95,4 @@ const MovieCard: FC<MovieProps> = ({ movie: movieProp }) => {
             </a>
         </Link>
     )
-}
-
-function replaceQueryParameter(router: NextRouter, key: string, value: string) {
-    const url = new URL(window.location.href)
-    url.searchParams.set(key, value)
-    router.replace(url.href)
-}
-
-function getQueryParameter(key: string) {
-    if (typeof window === "undefined") return null
-
-    const url = new URL(window.location.href)
-    return url.searchParams.get(key)
-}
-
-class NavigationBarState {
-    searchQuery: string = getQueryParameter("search") ?? ""
-
-    setSearchQuery = debounce((value: string) => {
-        this.searchQuery = value
-    }, 500)
 }

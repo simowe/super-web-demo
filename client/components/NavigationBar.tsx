@@ -1,20 +1,21 @@
 import s from "client/styles/NavigationBar.module.scss"
+import { useDebouncedSearchInput } from "client/utils/useDebouncedSearchInput"
 import { FC } from "react"
 
 type NavigationBarProps = {
     initialValue: string
-    onChange: (value: string) => void
+    onSearch: (value: string) => void
 }
 
-const NavigationBar: FC<NavigationBarProps> = ({ onChange, initialValue }) => {
+const NavigationBar: FC<NavigationBarProps> = ({ onSearch, initialValue }) => {
     return (
         <div className="container">
             <div className={s.search}>
                 <input
-                    defaultValue={initialValue}
                     className={s.search__input}
                     placeholder="Search"
-                    onChange={(e) => onChange(e.currentTarget.value)}
+                    defaultValue={initialValue}
+                    {...useDebouncedSearchInput(onSearch, 500)}
                 />
             </div>
         </div>
@@ -22,4 +23,3 @@ const NavigationBar: FC<NavigationBarProps> = ({ onChange, initialValue }) => {
 }
 
 export default NavigationBar
-
