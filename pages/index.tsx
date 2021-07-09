@@ -83,7 +83,7 @@ const MoviesList: FC<MoviesListProps> = ({ searchQuery, initialData }) => {
     if (data === undefined) return <div>loading</div>
 
     const movies = data.map((data, index) => (
-        <MoviePage movies={data.data} key={index} />
+        <MoviePage movies={data.data} isLazyLoaded={index !== 0} key={index} />
     ))
 
     return (
@@ -96,25 +96,27 @@ const MoviesList: FC<MoviesListProps> = ({ searchQuery, initialData }) => {
 
 type MoviePageProps = {
     movies: MovieType[]
+    isLazyLoaded: boolean
 }
 
-const MoviePage: FC<MoviePageProps> = memo(({ movies }) => {
+const MoviePage: FC<MoviePageProps> = memo(({ movies, isLazyLoaded }) => {
     const movieElements = movies.map((movie) => (
-        <MovieCard movie={movie} key={movie._id} />
+        <MovieCard movie={movie} lazy={isLazyLoaded} key={movie._id} />
     ))
     return <Fragment>{movieElements}</Fragment>
 })
 
 type MovieProps = {
     movie: MovieType
+    lazy: boolean
 }
 
-const MovieCard: FC<MovieProps> = ({ movie }) => {
+const MovieCard: FC<MovieProps> = ({ movie, lazy }) => {
     return (
         <Link href={`/movie/${movie._id}`}>
             <a className={s.movieCard}>
                 <img
-                    loading="lazy"
+                    loading={lazy ? "lazy" : "eager"}
                     className={s.movieCard__poster}
                     src={movie.poster}
                     alt={movie.title}
