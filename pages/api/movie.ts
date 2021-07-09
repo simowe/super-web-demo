@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { getMoviesCollection } from "server/mongo"
+import { sortBy } from "lodash"
 
 export default async function handler(
     req: NextApiRequest,
@@ -7,26 +8,34 @@ export default async function handler(
 ) {
     const movies = await getMoviesCollection()
 
-    const { search } = req.query
+    // const { search, after } = req.query
 
-    const findParams = getFindParams(search as string)
+    const findParams = getFindParams(req.query)
 
-    const result = await movies
-        .find(findParams)
-        .sort({ "imdb.rating": -1 })
-        .limit(10)
-        .toArray()
+    const data = sortBy(
+        await movies
+            .find(findParams)
+            .sort({ "imdb.rating": req.query.before ? 1 : -1 })
+            .limit(10)
+            .toArray(),
+        (a) => -a.imdb.rating
+    )
 
-    res.status(200).json(result)
+    const cursor = data[data.length - 1]?.imdb.rating
+    console.log(cursor, findParams)
+    res.status(200).json({ data, cursor })
 }
 
-function getFindParams(search: string | undefined) {
+function getFindParams(queryParams: {
+    [key: string]: string | undefined | string[]
+}) {
     const commonParams = {
         poster: { $ne: null },
         "imdb.rating": { $ne: "" },
     }
 
     const searchParams = (() => {
+        const search = queryParams.search as string | undefined
         if (!search) return {}
 
         const logicalAndSearch = search
@@ -38,8 +47,24 @@ function getFindParams(search: string | undefined) {
         return { $text: { $search: logicalAndSearch } }
     })()
 
+    const afterParams = (() => {
+        const after = queryParams.after as string | undefined
+        if (!after) return {}
+
+        return { "imdb.rating": { $lt: Number(after), $ne: "" } }
+    })()
+
+    const beforeParams = (() => {
+        const before = queryParams.before as string | undefined
+        if (!before) return {}
+
+        return { "imdb.rating": { $gt: Number(before), $ne: "" } }
+    })()
+
     return {
         ...commonParams,
         ...searchParams,
+        ...afterParams,
+        ...beforeParams,
     }
 }

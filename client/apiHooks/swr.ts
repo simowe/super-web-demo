@@ -27,8 +27,6 @@ export function useSWRCached<T>(
 }
 
 export async function fetchJson(url: string) {
-    // await delay(2000)
-
     return fetch(url).then((result) => result.json())
 }
 
