@@ -1,11 +1,17 @@
+import { fetchJson } from "client/apiHooks/swr"
 import { MovieType } from "client/apiHooks/useMovie"
-import { useMoviesInfinite } from "client/apiHooks/useMovies"
+import {
+    getMoviesApiUrl,
+    MoviesApiResult,
+    useMoviesInfinite,
+} from "client/apiHooks/useMovies"
 import NavigationBar from "client/components/NavigationBar"
 import s from "client/styles/MoviesPage.module.scss"
 import { useQueryParameterState } from "client/utils/useQueryParameterState"
+import { GetStaticProps } from "next"
 import Head from "next/head"
 import Link from "next/link"
-import { FC, Fragment, memo, useCallback } from "react"
+import { FC, Fragment, memo } from "react"
 
 /*
 
@@ -31,7 +37,8 @@ Instant page load:
 
 */
 
-const MoviesPage: FC = () => {
+const MoviesPage: FC<{ initialData: MoviesApiResult }> = ({ initialData }) => {
+    console.log({ initialData })
     const [searchQuery, setSearchQuery] = useQueryParameterState("search")
 
     return (
@@ -44,7 +51,10 @@ const MoviesPage: FC = () => {
                 <Head>
                     <title>Movies</title>
                 </Head>
-                <MoviesList searchQuery={searchQuery} />
+                <MoviesList
+                    searchQuery={searchQuery}
+                    initialData={initialData}
+                />
             </main>
         </Fragment>
     )
@@ -52,12 +62,23 @@ const MoviesPage: FC = () => {
 
 export default MoviesPage
 
-type MoviesListProps = {
-    searchQuery: string | undefined
+export const getStaticProps: GetStaticProps = async () => {
+    return {
+        props: {
+            initialData: await fetchJson(
+                `https://super-web-demo.vercel.app${getMoviesApiUrl()}`
+            ),
+        },
+    }
 }
 
-const MoviesList: FC<MoviesListProps> = ({ searchQuery }) => {
-    const { data, fetchMore } = useMoviesInfinite(searchQuery)
+type MoviesListProps = {
+    searchQuery: string | undefined
+    initialData: MoviesApiResult | undefined
+}
+
+const MoviesList: FC<MoviesListProps> = ({ searchQuery, initialData }) => {
+    const { data, fetchMore } = useMoviesInfinite(searchQuery, initialData)
 
     if (data === undefined) return <div>loading</div>
 

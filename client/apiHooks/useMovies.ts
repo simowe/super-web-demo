@@ -15,10 +15,17 @@ export function useMovies(search?: string, after?: string, before?: string) {
     return useSWR<MoviesApiResult>(apiUrl, fetchJson, swrProps)
 }
 
-export function useMoviesInfinite(search?: string) {
+export function useMoviesInfinite(
+    search?: string,
+    initialData?: MoviesApiResult
+) {
     return useSWRInfiniteHelper<MoviesApiResult>(
-        (data) => `/api/movie${queryParams({ search, after: data?.cursor })}`,
+        (data) => getMoviesApiUrl(search, data?.cursor),
         fetchJson,
-        swrProps
+        { ...swrProps, initialData: initialData ? [initialData] : undefined }
     )
+}
+
+export function getMoviesApiUrl(search?: string, after?: string) {
+    return `/api/movie${queryParams({ search, after })}`
 }
