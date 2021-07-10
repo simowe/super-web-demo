@@ -14,6 +14,7 @@ export type MovieType = {
     genres: string[]
     directors?: string[]
     writers?: string[]
+    cast?: string[]
 }
 
 export type ImdbRating = {

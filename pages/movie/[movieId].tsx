@@ -104,6 +104,7 @@ const MovieDescription: FC<MovieProps> = ({ movie }) => {
             <MyRating movie={movie} />
             <ImdbRating movie={movie} />
             <Directors directors={movie.directors} />
+            <Cast cast={movie.cast} />
             <Credit title="Writer" name={movie.writers?.join(", ")} />
         </div>
     )
@@ -151,6 +152,27 @@ const Directors: FC<DirectorsProps> = ({ directors = [] }) => {
     return (
         <div className={s.credit}>
             <div className={s.credit__title}>Directors</div>
+            {directorElements}
+        </div>
+    )
+}
+
+type CastProps = {
+    cast?: string[]
+}
+
+const Cast: FC<CastProps> = ({ cast = [] }) => {
+    if (cast.length === 0) return null
+
+    const directorElements = cast.map((cast) => (
+        <Link href={`/cast/${cast}`} key={cast}>
+            <a className={s.credit__name}>{cast}</a>
+        </Link>
+    ))
+
+    return (
+        <div className={s.credit}>
+            <div className={s.credit__title}>Cast</div>
             {directorElements}
         </div>
     )
