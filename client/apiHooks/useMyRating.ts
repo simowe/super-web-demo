@@ -16,7 +16,7 @@ export function useMyRating(id: string | undefined) {
             if (apiUrl === null) return
 
             mutate({ rating }, false)
-            mutate(rateMovie(apiUrl, rating))
+            mutate(rateMovie(apiUrl, rating), false)
         },
         [mutate, apiUrl]
     )

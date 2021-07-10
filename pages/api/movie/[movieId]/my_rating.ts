@@ -20,14 +20,13 @@ export default async function handler(
         const put = async () => {
             const rating = JSON.parse(req.body).rating
             await changeMyRating(user_id, movie_id, rating)
-            console.log(typeof req.body, { rating })
             res.status(200).json({ rating })
         }
 
         if (req.method === "GET") {
-            get()
+            await get()
         } else if (req.method === "PUT") {
-            put()
+            await put()
         } else {
             res.status(405).end()
         }
