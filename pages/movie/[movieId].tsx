@@ -1,6 +1,7 @@
 import { fetchJson } from "client/apiHooks/swr"
 import { getMovieApiUrl, MovieType, useMovie } from "client/apiHooks/useMovie"
 import s from "client/styles/MoviePage.module.scss"
+import { InitialDataPage } from "client/types/InitialDataPage"
 import { GetStaticPaths, GetStaticProps } from "next"
 import { useRouter } from "next/dist/client/router"
 import Head from "next/head"
@@ -26,10 +27,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
     }
 }
 
-const MoviePage: FC = () => {
+const MoviePage: InitialDataPage<MovieType> = ({ initialData }) => {
+    console.log({ initialData })
     const { movieId } = useRouter().query
 
-    const { data: movie } = useMovie(movieId as string | undefined)
+    const { data: movie } = useMovie(movieId as string | undefined, initialData)
 
     if (movie === undefined) {
         return (
