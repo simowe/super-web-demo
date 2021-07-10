@@ -30,6 +30,7 @@ const MoviesPage: FC = () => {
 
     return (
         <Fragment>
+            <h1 className={s.pageTitle}>{genre}</h1>
             <main className={s.main}>
                 <Head>
                     <title>Movies</title>
