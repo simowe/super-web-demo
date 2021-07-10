@@ -1,6 +1,13 @@
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+}
+
 .search {
     // width: 100%;
     padding: 20px 20px;
+    flex-grow: 1;
 
     &__input {
         width: 100%;
@@ -13,4 +20,16 @@
             outline: none;
         }
     }
+}
+
+.loginButton {
+    align-self: center;
+    padding: 10px 20px;
+    display: block;
+
+    background: rgb(37, 32, 32);
+    color: white;
+    border: 1px solid black;
+    border-radius: 15px;
+    cursor: pointer;
 }

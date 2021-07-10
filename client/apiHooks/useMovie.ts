@@ -1,4 +1,3 @@
-import { queryParams } from "client/utils/queryParams"
 import useSWR from "swr"
 import { fetchJson } from "./swr"
 

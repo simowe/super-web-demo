@@ -1,4 +1,5 @@
 import { MovieType, useMovie } from "client/apiHooks/useMovie"
+import { useMyRating } from "client/apiHooks/useMyRating"
 import s from "client/styles/MoviePage.module.scss"
 import { InitialDataPage } from "client/types/InitialDataPage"
 import { serializable } from "client/utils/serializable"
@@ -42,7 +43,7 @@ const MoviePage: InitialDataPage<MovieType> = ({ initialData }) => {
             <Head>
                 <title>{movie.title}</title>
             </Head>
-            <div className="container">
+            <div className={s.container}>
                 <MovieDetails movie={movie} />
             </div>
         </main>
@@ -65,7 +66,7 @@ const MovieDetails: FC<MovieProps> = ({ movie }) => {
                         className={s.poster__img}
                         src={movie.poster}
                         alt={movie.title}
-                    ></img>
+                    />
                 </div>
                 <MovieDescription movie={movie} />
             </div>
@@ -107,6 +108,8 @@ const MovieDescription: FC<MovieProps> = ({ movie }) => {
 }
 
 const ImdbRating: FC<MovieProps> = ({ movie }) => {
+    const { data: myRating } = useMyRating(movie._id)
+
     const { rating, votes } = movie.imdb
     return (
         <div className={s.imdbRating}>
@@ -114,6 +117,9 @@ const ImdbRating: FC<MovieProps> = ({ movie }) => {
             <div className={s.imdbRating__rating}>{rating}</div>/
             <div className={s.imdbRating__total}>10</div>
             <div className={s.imdbRating__votes}>{votes} votes</div>
+            <div className={s.imdbRating__votes}>
+                My rating: {myRating?.rating}
+            </div>
         </div>
     )
 }

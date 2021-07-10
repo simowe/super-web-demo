@@ -1,11 +1,6 @@
 import classNames from "classnames"
-import { fetchJson } from "client/apiHooks/swr"
 import { MovieType } from "client/apiHooks/useMovie"
-import {
-    getMoviesApiUrl,
-    MoviesApiResult,
-    useMoviesInfinite,
-} from "client/apiHooks/useMovies"
+import { MoviesApiResult, useMoviesInfinite } from "client/apiHooks/useMovies"
 import NavigationBar from "client/components/NavigationBar"
 import s from "client/styles/MoviesPage.module.scss"
 import { serializable } from "client/utils/serializable"

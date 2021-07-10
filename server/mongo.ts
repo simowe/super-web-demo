@@ -21,3 +21,7 @@ export async function getMongodbClient() {
 export async function getMoviesCollection() {
     return (await getMongodbClient()).db("sample_mflix").collection("movies")
 }
+
+export async function getRatingsCollection() {
+    return (await getMongodbClient()).db("sample_mflix").collection("ratings")
+}
