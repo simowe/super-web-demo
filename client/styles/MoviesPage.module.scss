@@ -38,7 +38,6 @@
         display: block;
         // background: black;
 
-        // animation: fade-in 0.2s;
     }
 
     &__description {
@@ -83,15 +82,5 @@
         &::after {
             content: "Loading...";
         }
-    }
-}
-
-@keyframes fade-in {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
     }
 }
