@@ -8,6 +8,7 @@ import { range } from "lodash"
 import { GetStaticPaths, GetStaticProps } from "next"
 import { useRouter } from "next/dist/client/router"
 import Head from "next/head"
+import Link from "next/link"
 import { fetchMovie } from "pages/api/movie/[movieId]"
 import { FC } from "react"
 
@@ -88,9 +89,9 @@ const TitleBar: FC<MovieProps> = ({ movie }) => {
 
 const MovieDescription: FC<MovieProps> = ({ movie }) => {
     const genres = movie.genres.map((genre) => (
-        <div className={s.genres__genre} key={genre}>
-            {genre}
-        </div>
+        <Link href={`/genre/${genre}`} key={genre}>
+            <a className={s.genres__genre}>{genre}</a>
+        </Link>
     ))
 
     return (
@@ -151,6 +152,7 @@ type StarIconProps = {
     isActive?: boolean
     onClick?: VoidFunction
 }
+
 const StarIcon: FC<StarIconProps> = ({ isActive = true, onClick }) => {
     const starClass = classNames(s.star, { [s.star__active]: isActive })
     return (
