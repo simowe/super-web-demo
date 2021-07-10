@@ -38,6 +38,9 @@ const MoviePage: InitialDataPage<MovieType> = ({ initialData }) => {
 
     return (
         <main className={s.main}>
+            <Link href="/">
+                <a className={s.goHome}>Home</a>
+            </Link>
             <Head>
                 <title>{movie.title}</title>
             </Head>
@@ -100,7 +103,7 @@ const MovieDescription: FC<MovieProps> = ({ movie }) => {
             <div className={s.plot}>{movie.plot}</div>
             <MyRating movie={movie} />
             <ImdbRating movie={movie} />
-            <Credit title="Director" name={movie.directors?.join(", ")} />
+            <Directors directors={movie.directors} />
             <Credit title="Writer" name={movie.writers?.join(", ")} />
         </div>
     )
@@ -130,6 +133,27 @@ const MyRating: FC<MovieProps> = ({ movie }) => {
     ))
 
     return <div className={s.myRating}>{starElements}</div>
+}
+
+type DirectorsProps = {
+    directors?: string[]
+}
+
+const Directors: FC<DirectorsProps> = ({ directors = [] }) => {
+    if (directors.length === 0) return null
+
+    const directorElements = directors.map((director) => (
+        <Link href={`/director/${director}`} key={director}>
+            <a className={s.credit__name}>{director}</a>
+        </Link>
+    ))
+
+    return (
+        <div className={s.credit}>
+            <div className={s.credit__title}>Directors</div>
+            <div className={s.credit__name}>{directorElements}</div>
+        </div>
+    )
 }
 
 type CreditProps = {
