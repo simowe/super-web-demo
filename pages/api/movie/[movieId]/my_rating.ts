@@ -1,4 +1,4 @@
-import firebase from "firebase/app"
+import firebase from "firebase"
 import type { NextApiRequest, NextApiResponse } from "next"
 import { getRatingsCollection } from "server/mongo"
 
