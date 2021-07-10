@@ -29,15 +29,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 const MoviePage: InitialDataPage<MovieType> = ({ initialData }) => {
     const { movieId } = useRouter().query
-
-    const { data: movie } = useMovie(movieId as string | undefined, initialData)
+    const { movie } = useMovie(movieId as string | undefined, initialData)
 
     if (movie === undefined) {
-        return (
-            <main className={s.main}>
-                <div className={s.loading}>Loading</div>
-            </main>
-        )
+        return <div className={s.loading}>Loading</div>
     }
 
     return (

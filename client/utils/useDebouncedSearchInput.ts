@@ -1,17 +1,6 @@
 import { debounce } from "lodash"
 import { KeyboardEvent, useCallback, useMemo, useRef } from "react"
 
-/*
-I'm pretty happy about the current solution, as all the complexity is contained within this file. The actual use is very clean.
-Still there might be better ways to do this.
-Maybe research other libraries:
-* Recoil
-* React Hook Form
-* RxJS
-* MobX
-
-*/
-
 export function useDebouncedSearchInput(
     onSearch: (value: string) => void,
     delay: number

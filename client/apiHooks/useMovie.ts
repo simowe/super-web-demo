@@ -35,9 +35,13 @@ export type RottenTomatesRating = {
 export function useMovie(id: string | undefined, initialData?: MovieType) {
     const apiUrl = id ? `/api/movie/${id}` : null
 
-    return useSWR<MovieType>(apiUrl, fetchJson, {
+    const { data } = useSWR<MovieType>(apiUrl, fetchJson, {
         initialData,
     })
+
+    return {
+        movie: data,
+    }
 }
 
 export function getMovieApiUrl(id: string) {
