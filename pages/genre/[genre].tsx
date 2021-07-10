@@ -1,7 +1,8 @@
-import { useGenreInfinite } from "client/apiHooks/useGenre"
+import { GenreApiResult, useGenreInfinite } from "client/apiHooks/useGenre"
 import FetchMoreButton from "client/components/FetchMoreButton"
 import MovieListSection from "client/components/MovieListSection"
 import s from "client/styles/MoviesPage.module.scss"
+import { InitialDataPage } from "client/types/InitialDataPage"
 import { serializable } from "client/utils/serializable"
 import { GetStaticPaths, GetStaticProps } from "next"
 import { useRouter } from "next/dist/client/router"
@@ -25,7 +26,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     }
 }
 
-const MoviesPage: FC = () => {
+const MoviesPage: InitialDataPage<GenreApiResult> = ({ initialData }) => {
     const { genre } = useRouter().query
 
     return (
@@ -35,7 +36,7 @@ const MoviesPage: FC = () => {
                 <Head>
                     <title>Movies</title>
                 </Head>
-                <MoviesList genre={genre as string} />
+                <MoviesList genre={genre as string} initialData={initialData} />
             </main>
         </Fragment>
     )
@@ -45,10 +46,11 @@ export default MoviesPage
 
 type MoviesListProps = {
     genre: string | undefined
+    initialData?: GenreApiResult
 }
 
-const MoviesList: FC<MoviesListProps> = ({ genre }) => {
-    const { data, fetchMore, isLoading } = useGenreInfinite(genre)
+const MoviesList: FC<MoviesListProps> = ({ genre, initialData }) => {
+    const { data, fetchMore, isLoading } = useGenreInfinite(genre, initialData)
 
     if (data === undefined) return <div>loading</div>
 

@@ -1,7 +1,11 @@
-import { useDirectorInfinite } from "client/apiHooks/useDirector"
+import {
+    DirectorApiResult,
+    useDirectorInfinite,
+} from "client/apiHooks/useDirector"
 import FetchMoreButton from "client/components/FetchMoreButton"
 import MovieListSection from "client/components/MovieListSection"
 import s from "client/styles/MoviesPage.module.scss"
+import { InitialDataPage } from "client/types/InitialDataPage"
 import { serializable } from "client/utils/serializable"
 import { GetStaticPaths, GetStaticProps } from "next"
 import { useRouter } from "next/dist/client/router"
@@ -25,7 +29,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     }
 }
 
-const MoviesPage: FC = () => {
+const MoviesPage: InitialDataPage<DirectorApiResult> = ({ initialData }) => {
     const { director } = useRouter().query
 
     return (
@@ -35,7 +39,10 @@ const MoviesPage: FC = () => {
                 <Head>
                     <title>Movies</title>
                 </Head>
-                <MoviesList director={director as string} />
+                <MoviesList
+                    director={director as string}
+                    initialData={initialData}
+                />
             </main>
         </Fragment>
     )
@@ -45,10 +52,14 @@ export default MoviesPage
 
 type MoviesListProps = {
     director: string | undefined
+    initialData?: DirectorApiResult
 }
 
-const MoviesList: FC<MoviesListProps> = ({ director }) => {
-    const { data, fetchMore, isLoading } = useDirectorInfinite(director)
+const MoviesList: FC<MoviesListProps> = ({ director, initialData }) => {
+    const { data, fetchMore, isLoading } = useDirectorInfinite(
+        director,
+        initialData
+    )
 
     if (data === undefined) return <div>loading</div>
 

@@ -151,7 +151,7 @@ const Directors: FC<DirectorsProps> = ({ directors = [] }) => {
     return (
         <div className={s.credit}>
             <div className={s.credit__title}>Directors</div>
-            <div className={s.credit__name}>{directorElements}</div>
+            {directorElements}
         </div>
     )
 }

@@ -20,3 +20,9 @@ export function useSWRInfiniteHelper<T>(
         isLoading,
     }
 }
+
+export function inArrayIfExists<T>(value: T | null | undefined) {
+    if (value === null || value === undefined) return undefined
+
+    return [value]
+}

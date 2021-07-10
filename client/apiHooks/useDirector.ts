@@ -1,5 +1,8 @@
 import { queryParams } from "client/utils/queryParams"
-import { useSWRInfiniteHelper } from "client/utils/useSWRInfiniteHelper"
+import {
+    inArrayIfExists,
+    useSWRInfiniteHelper,
+} from "client/utils/useSWRInfiniteHelper"
 import { fetchJson, swrProps } from "./swr"
 import { MovieType } from "./useMovie"
 
@@ -8,7 +11,10 @@ export type DirectorApiResult = {
     cursor?: string
 }
 
-export function useDirectorInfinite(director: string | undefined) {
+export function useDirectorInfinite(
+    director: string | undefined,
+    initialData?: DirectorApiResult
+) {
     return useSWRInfiniteHelper<DirectorApiResult>(
         (data) => {
             if (director === undefined) return null
@@ -18,6 +24,6 @@ export function useDirectorInfinite(director: string | undefined) {
             })}`
         },
         fetchJson,
-        swrProps
+        { ...swrProps, initialData: inArrayIfExists(initialData) }
     )
 }
