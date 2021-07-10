@@ -1,19 +1,33 @@
-import firebase from "firebase/app"
-import "firebase/auth"
+import firebaseAuth from "common/firebaseAuth"
 
-const LOGIN_DETAILS_STORAGE_KEY = "LOGIN_DETAILS_STORAGE_KEY"
+const API_TOKEN_STORAGE_KEY = "LOGGED_IN_API_KEY"
 
-export function getIdToken(): string | undefined {
-    return localStorage.getItem(LOGIN_DETAILS_STORAGE_KEY) ?? undefined
+export function getApiToken(): string | undefined {
+    return localStorage.getItem(API_TOKEN_STORAGE_KEY) ?? undefined
 }
 
-export function setLoginDetails(data: any) {
-    localStorage.setItem(LOGIN_DETAILS_STORAGE_KEY, data.credential.idToken)
+function setApiToken(apiToken: string) {
+    localStorage.setItem(API_TOKEN_STORAGE_KEY, apiToken)
 }
 
-export async function loginWithFirebase() {
-    const provider = new firebase.auth.GoogleAuthProvider()
+export async function loginUser() {
+    const firebaseIdToken = await loginWithFirebase()
+    const apiToken = await loginWithApi(firebaseIdToken)
+    setApiToken(apiToken)
+}
 
-    const res = await firebase.auth().signInWithPopup(provider)
-    setLoginDetails(res)
+async function loginWithFirebase() {
+    const provider = new firebaseAuth.GoogleAuthProvider()
+    const data = await firebaseAuth().signInWithPopup(provider)
+    return (data.credential as any).idToken as string
+}
+
+async function loginWithApi(firebaseIdToken: string) {
+    const params: RequestInit = {
+        headers: { Authorization: firebaseIdToken },
+    }
+    const res = await fetch("/api/login", params)
+    if (!res.ok) throw new Error("FUCK YOU DUDE")
+
+    return (await res.json()).token as string
 }

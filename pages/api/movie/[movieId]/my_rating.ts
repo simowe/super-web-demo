@@ -1,6 +1,5 @@
-import firebase from "firebase"
-import "common/firebaseConfig"
 import type { NextApiRequest, NextApiResponse } from "next"
+import { verifyAuthorizationHeader } from "server/jwt"
 import { getRatingsCollection } from "server/mongo"
 
 export default async function handler(
@@ -8,33 +7,16 @@ export default async function handler(
     res: NextApiResponse<any>
 ) {
     try {
-        const id_token = req.headers.authorization
-
         const { movieId } = req.query
 
-        const user = await firebaseLogin(id_token)
-
-        const rating = await fetchMyRating(user.uid, movieId as string)
+        const user = await verifyAuthorizationHeader(req)
+        const rating = await fetchMyRating(user.user_id, movieId as string)
 
         res.status(200).json({ rating })
     } catch (e) {
         console.log(e)
         res.status(401).json("Fuck you")
     }
-}
-
-async function firebaseLogin(id_token: string | undefined) {
-    let time = Date.now()
-
-    if (id_token === undefined) throw new Error("Missing Authorization header")
-
-    var credential = firebase.auth.GoogleAuthProvider.credential(id_token)
-
-    const { user } = await firebase.auth().signInWithCredential(credential)
-    if (user === null) throw new Error("WTF DUDE!")
-
-    console.log("Firebase login time", Date.now() - time, "ms")
-    return user
 }
 
 async function fetchMyRating(user_id: string, movie_id: string) {

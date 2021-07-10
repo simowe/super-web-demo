@@ -1,4 +1,4 @@
-import { loginWithFirebase } from "client/login"
+import { loginUser } from "client/login"
 import s from "client/styles/NavigationBar.module.scss"
 import { useDebouncedSearchInput } from "client/utils/useDebouncedSearchInput"
 import { FC } from "react"
@@ -19,7 +19,7 @@ const NavigationBar: FC<NavigationBarProps> = ({ onSearch, initialValue }) => {
                     {...useDebouncedSearchInput(onSearch, 500)}
                 />
             </div>
-            <button className={s.loginButton} onClick={loginWithFirebase}>
+            <button className={s.loginButton} onClick={loginUser}>
                 Log in
             </button>
         </div>

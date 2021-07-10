@@ -1,4 +1,4 @@
-import { getIdToken } from "client/login"
+import { getApiToken } from "client/login"
 import { SWRConfiguration } from "swr"
 
 export const swrProps: SWRConfiguration = {
@@ -11,22 +11,11 @@ export async function fetchJson(url: string) {
 }
 
 export async function fetchJsonAuth(url: string) {
-    const idToken = getIdToken()
+    const idToken = getApiToken()
     if (idToken === undefined) return
 
     const params: RequestInit = {
         headers: { Authorization: idToken },
     }
-    return fetch(url, params).then(async (result) => {
-        const j = await result.json()
-        console.log(result, j)
-        return j
-    })
-}
-
-// Not used
-function delay(timeout: number): Promise<void> {
-    return new Promise((resolve) => {
-        setTimeout(resolve, timeout)
-    })
+    return fetch(url, params).then((result) => result.json())
 }

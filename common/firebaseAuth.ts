@@ -1,8 +1,7 @@
 import firebase from "firebase/app"
+import "firebase/auth"
 
 if (firebase.apps.length === 0) {
-    console.log("Initializing firebase!")
-
     // Your web app's Firebase configuration
     var firebaseConfig = {
         apiKey: "AIzaSyDmsUbp3J_FXDGW7_7TvkItBMr6zvrSVtA",
@@ -14,3 +13,5 @@ if (firebase.apps.length === 0) {
     }
     firebase.initializeApp(firebaseConfig)
 }
+
+export default firebase.auth
