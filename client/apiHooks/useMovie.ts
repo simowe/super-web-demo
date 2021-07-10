@@ -1,5 +1,6 @@
 import { queryParams } from "client/utils/queryParams"
-import { fetchJson, useSWRCached } from "./swr"
+import useSWR from "swr"
+import { fetchJson } from "./swr"
 
 export type MovieType = {
     _id: string
@@ -35,7 +36,7 @@ export type RottenTomatesRating = {
 export function useMovie(id: string | undefined, initialData?: MovieType) {
     const apiUrl = id ? `/api/movie/${id}` : null
 
-    return useSWRCached<MovieType>(apiUrl, fetchJson, {
+    return useSWR<MovieType>(apiUrl, fetchJson, {
         initialData,
     })
 }

@@ -8,11 +8,13 @@ import {
 } from "client/apiHooks/useMovies"
 import NavigationBar from "client/components/NavigationBar"
 import s from "client/styles/MoviesPage.module.scss"
+import { serializable } from "client/utils/serializable"
 import { useQueryParameterState } from "client/utils/useQueryParameterState"
 import { GetStaticProps } from "next"
 import Head from "next/head"
 import Link from "next/link"
 import { FC, Fragment, memo } from "react"
+import { fetchMovies } from "./api/movie"
 
 /*
 
@@ -41,9 +43,7 @@ Instant page load:
 export const getStaticProps: GetStaticProps = async () => {
     return {
         props: {
-            initialData: await fetchJson(
-                `https://super-web-demo.vercel.app${getMoviesApiUrl()}`
-            ),
+            initialData: serializable(await fetchMovies()),
         },
     }
 }

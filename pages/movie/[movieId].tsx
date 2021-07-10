@@ -1,21 +1,18 @@
-import { fetchJson } from "client/apiHooks/swr"
-import { getMovieApiUrl, MovieType, useMovie } from "client/apiHooks/useMovie"
+import { MovieType, useMovie } from "client/apiHooks/useMovie"
 import s from "client/styles/MoviePage.module.scss"
 import { InitialDataPage } from "client/types/InitialDataPage"
+import { serializable } from "client/utils/serializable"
 import { GetStaticPaths, GetStaticProps } from "next"
 import { useRouter } from "next/dist/client/router"
 import Head from "next/head"
+import { fetchMovie } from "pages/api/movie/[movieId]"
 import { FC } from "react"
 
 export const getStaticProps: GetStaticProps = async (context) => {
-    const id = context.params?.movieId
+    const movieId = context.params?.movieId as string
     return {
         props: {
-            initialData: await fetchJson(
-                `https://super-web-demo.vercel.app${getMovieApiUrl(
-                    id as string
-                )}`
-            ),
+            initialData: serializable(await fetchMovie(movieId)),
         },
     }
 }
@@ -28,7 +25,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 const MoviePage: InitialDataPage<MovieType> = ({ initialData }) => {
-    console.log({ initialData })
     const { movieId } = useRouter().query
 
     const { data: movie } = useMovie(movieId as string | undefined, initialData)

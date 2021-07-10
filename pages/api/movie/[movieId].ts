@@ -7,12 +7,14 @@ export default async function handler(
     res: NextApiResponse<any>
 ) {
     const { movieId } = req.query
+    const movie = await fetchMovie(movieId as string)
+    res.status(200).json(movie)
+}
 
+export async function fetchMovie(movieId: string) {
     const movies = await getMoviesCollection()
 
-    const result = await movies.findOne({
-        _id: new ObjectId(movieId as string),
+    return await movies.findOne({
+        _id: new ObjectId(movieId),
     })
-
-    res.status(200).json(result)
 }
