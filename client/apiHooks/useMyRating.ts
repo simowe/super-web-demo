@@ -29,7 +29,7 @@ export function useMyRating(id: string | undefined) {
 
 async function rateMovie(apiUrl: string, rating: number) {
     const params: RequestInit = {
-        method: "PATCH",
+        method: "PUT",
         ...getAuthHeaders(),
         body: JSON.stringify({ rating }),
     }

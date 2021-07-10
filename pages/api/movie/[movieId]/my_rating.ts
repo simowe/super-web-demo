@@ -17,7 +17,7 @@ export default async function handler(
             res.status(200).json({ rating })
         }
 
-        const patch = async () => {
+        const put = async () => {
             const rating = JSON.parse(req.body).rating
             await changeMyRating(user_id, movie_id, rating)
             console.log(typeof req.body, { rating })
@@ -26,8 +26,8 @@ export default async function handler(
 
         if (req.method === "GET") {
             get()
-        } else if (req.method === "PATCH") {
-            patch()
+        } else if (req.method === "PUT") {
+            put()
         } else {
             res.status(405).end()
         }
