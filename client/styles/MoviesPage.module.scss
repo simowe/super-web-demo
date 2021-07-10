@@ -61,6 +61,31 @@
     }
 }
 
+.fetchMore {
+    display: block;
+    padding: 20px 40px;
+    margin: 30px auto;
+    font-size: 30px;
+    background: rgb(37, 32, 32);
+    color: white;
+    border: 1px solid black;
+    border-radius: 15px;
+    cursor: pointer;
+
+    &::after {
+        content: "Load more";
+    }
+
+    &__loading {
+        background: grey;
+        cursor: not-allowed;
+
+        &::after {
+            content: "Loading...";
+        }
+    }
+}
+
 @keyframes fade-in {
     from {
         opacity: 0;

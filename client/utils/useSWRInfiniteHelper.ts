@@ -12,8 +12,11 @@ export function useSWRInfiniteHelper<T>(
         swr.setSize(swr.size + 1)
     }, [swr])
 
+    const isLoading = (swr.data ?? [])[swr.size - 1] === undefined
+
     return {
         ...swr,
         fetchMore,
+        isLoading,
     }
 }

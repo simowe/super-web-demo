@@ -38,5 +38,5 @@ function getQueryParameter(key: string): ValueType {
     if (typeof window === "undefined") return undefined
 
     const url = new URL(window.location.href)
-    return url.searchParams.get(key) ?? undefined
+    return url.searchParams.get(key) || undefined
 }

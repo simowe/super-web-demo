@@ -1,3 +1,4 @@
+import classNames from "classnames"
 import { fetchJson } from "client/apiHooks/swr"
 import { MovieType } from "client/apiHooks/useMovie"
 import {
@@ -37,8 +38,17 @@ Instant page load:
 
 */
 
+export const getStaticProps: GetStaticProps = async () => {
+    return {
+        props: {
+            initialData: await fetchJson(
+                `https://super-web-demo.vercel.app${getMoviesApiUrl()}`
+            ),
+        },
+    }
+}
+
 const MoviesPage: FC<{ initialData: MoviesApiResult }> = ({ initialData }) => {
-    console.log({ initialData })
     const [searchQuery, setSearchQuery] = useQueryParameterState("search")
 
     return (
@@ -53,7 +63,7 @@ const MoviesPage: FC<{ initialData: MoviesApiResult }> = ({ initialData }) => {
                 </Head>
                 <MoviesList
                     searchQuery={searchQuery}
-                    initialData={initialData}
+                    initialData={ifMissing(searchQuery, initialData)}
                 />
             </main>
         </Fragment>
@@ -62,23 +72,16 @@ const MoviesPage: FC<{ initialData: MoviesApiResult }> = ({ initialData }) => {
 
 export default MoviesPage
 
-export const getStaticProps: GetStaticProps = async () => {
-    return {
-        props: {
-            initialData: await fetchJson(
-                `https://super-web-demo.vercel.app${getMoviesApiUrl()}`
-            ),
-        },
-    }
-}
-
 type MoviesListProps = {
     searchQuery: string | undefined
     initialData: MoviesApiResult | undefined
 }
 
 const MoviesList: FC<MoviesListProps> = ({ searchQuery, initialData }) => {
-    const { data, fetchMore } = useMoviesInfinite(searchQuery, initialData)
+    const { data, fetchMore, isLoading } = useMoviesInfinite(
+        searchQuery,
+        initialData
+    )
 
     if (data === undefined) return <div>loading</div>
 
@@ -89,7 +92,7 @@ const MoviesList: FC<MoviesListProps> = ({ searchQuery, initialData }) => {
     return (
         <Fragment>
             <div className={s.movies}>{movies}</div>
-            <button onClick={fetchMore}>Load more</button>
+            <FetchMoreButton isLoading={isLoading} fetchMore={fetchMore} />
         </Fragment>
     )
 }
@@ -129,4 +132,30 @@ const MovieCard: FC<MovieProps> = ({ movie, lazy }) => {
             </a>
         </Link>
     )
+}
+
+type FetchMoreButtonProps = {
+    isLoading: boolean
+    fetchMore: VoidFunction
+}
+
+const FetchMoreButton: FC<FetchMoreButtonProps> = ({
+    isLoading,
+    fetchMore,
+}) => {
+    const buttonClass = classNames(s.fetchMore, {
+        [s.fetchMore__loading]: isLoading,
+    })
+
+    return (
+        <button
+            className={buttonClass}
+            onClick={fetchMore}
+            disabled={isLoading}
+        />
+    )
+}
+
+function ifMissing<T, K>(value: T | undefined | null, result: K) {
+    if (value === undefined || value === null) return result
 }

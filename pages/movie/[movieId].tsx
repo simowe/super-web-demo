@@ -1,8 +1,30 @@
-import { MovieType, useMovie } from "client/apiHooks/useMovie"
+import { fetchJson } from "client/apiHooks/swr"
+import { getMovieApiUrl, MovieType, useMovie } from "client/apiHooks/useMovie"
 import s from "client/styles/MoviePage.module.scss"
+import { GetStaticPaths, GetStaticProps } from "next"
 import { useRouter } from "next/dist/client/router"
-import { FC } from "react"
 import Head from "next/head"
+import { FC } from "react"
+
+export const getStaticProps: GetStaticProps = async (context) => {
+    const id = context.params?.movieId
+    return {
+        props: {
+            initialData: await fetchJson(
+                `https://super-web-demo.vercel.app${getMovieApiUrl(
+                    id as string
+                )}`
+            ),
+        },
+    }
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+    return {
+        paths: [],
+        fallback: "blocking",
+    }
+}
 
 const MoviePage: FC = () => {
     const { movieId } = useRouter().query
