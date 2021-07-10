@@ -24,6 +24,8 @@ export default async function handler(
 }
 
 async function firebaseLogin(id_token: string | undefined) {
+    let time = Date.now()
+
     if (id_token === undefined) throw new Error("Missing Authorization header")
 
     var credential = firebase.auth.GoogleAuthProvider.credential(id_token)
@@ -31,6 +33,7 @@ async function firebaseLogin(id_token: string | undefined) {
     const { user } = await firebase.auth().signInWithCredential(credential)
     if (user === null) throw new Error("WTF DUDE!")
 
+    console.log("Firebase login time", Date.now() - time, "ms")
     return user
 }
 
