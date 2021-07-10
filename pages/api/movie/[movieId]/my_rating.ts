@@ -1,5 +1,5 @@
 import firebase from "firebase"
-import "firebaseConfig"
+import "common/firebaseConfig"
 import type { NextApiRequest, NextApiResponse } from "next"
 import { getRatingsCollection } from "server/mongo"
 
