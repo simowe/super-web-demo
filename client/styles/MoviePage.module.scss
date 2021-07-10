@@ -91,14 +91,6 @@
     margin: 10px 0;
     // align-items: center;
 
-    &__star {
-        fill: rgb(245, 197, 24);
-        margin-right: 5px;
-        height: 30px;
-        width: 30px;
-        align-self: center;
-    }
-
     &__rating {
         font-weight: 600;
     }
@@ -117,6 +109,24 @@
     &__votes::before {
         content: "·";
         margin: 0 10px;
+    }
+}
+
+.myRating {
+    margin-top: 20px;
+}
+
+.star {
+    fill: grey;
+    margin-right: 5px;
+    height: 30px;
+    width: 30px;
+    align-self: center;
+    cursor: pointer;
+
+    &__active,
+    &:hover {
+        fill: rgb(245, 197, 24);
     }
 }
 

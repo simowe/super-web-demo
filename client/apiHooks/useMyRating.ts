@@ -1,5 +1,6 @@
+import { useCallback } from "react"
 import useSWR from "swr"
-import { fetchJsonAuth, swrProps } from "./swr"
+import { fetchJsonAuth, getAuthHeaders, swrProps } from "./swr"
 
 export type RatingType = {
     rating: number
@@ -8,7 +9,30 @@ export type RatingType = {
 export function useMyRating(id: string | undefined) {
     const apiUrl = id ? `/api/movie/${id}/my_rating` : null
 
-    return useSWR<RatingType>(apiUrl, fetchJsonAuth, {
-        ...swrProps,
-    })
+    const { mutate, data } = useSWR<RatingType>(apiUrl, fetchJsonAuth, swrProps)
+
+    const updateRating = useCallback(
+        async (rating: number) => {
+            if (apiUrl === null) return
+
+            mutate({ rating }, false)
+            mutate(rateMovie(apiUrl, rating))
+        },
+        [mutate, apiUrl]
+    )
+
+    return {
+        myRating: data,
+        updateRating,
+    }
+}
+
+async function rateMovie(apiUrl: string, rating: number) {
+    const params: RequestInit = {
+        method: "PATCH",
+        ...getAuthHeaders(),
+        body: JSON.stringify({ rating }),
+    }
+
+    return fetch(apiUrl, params).then((result) => result.json())
 }

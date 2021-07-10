@@ -19,3 +19,9 @@ export async function fetchJsonAuth(url: string) {
     }
     return fetch(url, params).then((result) => result.json())
 }
+
+export function getAuthHeaders(): RequestInit {
+    const idToken = getApiToken()!
+
+    return { headers: { Authorization: idToken } }
+}

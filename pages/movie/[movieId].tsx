@@ -1,8 +1,10 @@
+import classNames from "classnames"
 import { MovieType, useMovie } from "client/apiHooks/useMovie"
 import { useMyRating } from "client/apiHooks/useMyRating"
 import s from "client/styles/MoviePage.module.scss"
 import { InitialDataPage } from "client/types/InitialDataPage"
 import { serializable } from "client/utils/serializable"
+import { range } from "lodash"
 import { GetStaticPaths, GetStaticProps } from "next"
 import { useRouter } from "next/dist/client/router"
 import Head from "next/head"
@@ -100,6 +102,7 @@ const MovieDescription: FC<MovieProps> = ({ movie }) => {
         <div className={s.description}>
             <div className={s.genres}>{genres}</div>
             <div className={s.plot}>{movie.plot}</div>
+            <MyRating movie={movie} />
             <ImdbRating movie={movie} />
             <Credit title="Director" name={movie.directors?.join(", ")} />
             <Credit title="Writer" name={movie.writers?.join(", ")} />
@@ -108,8 +111,6 @@ const MovieDescription: FC<MovieProps> = ({ movie }) => {
 }
 
 const ImdbRating: FC<MovieProps> = ({ movie }) => {
-    const { data: myRating } = useMyRating(movie._id)
-
     const { rating, votes } = movie.imdb
     return (
         <div className={s.imdbRating}>
@@ -117,11 +118,22 @@ const ImdbRating: FC<MovieProps> = ({ movie }) => {
             <div className={s.imdbRating__rating}>{rating}</div>/
             <div className={s.imdbRating__total}>10</div>
             <div className={s.imdbRating__votes}>{votes} votes</div>
-            <div className={s.imdbRating__votes}>
-                My rating: {myRating?.rating}
-            </div>
         </div>
     )
+}
+
+const MyRating: FC<MovieProps> = ({ movie }) => {
+    const { myRating, updateRating } = useMyRating(movie._id)
+
+    const starElements = range(0, 10).map((_, index) => (
+        <StarIcon
+            key={index}
+            isActive={index < (myRating?.rating ?? 0)}
+            onClick={() => updateRating(index + 1)}
+        />
+    ))
+
+    return <div className={s.myRating}>{starElements}</div>
 }
 
 type CreditProps = {
@@ -140,12 +152,18 @@ const Credit: FC<CreditProps> = ({ title, name }) => {
     )
 }
 
-const StarIcon: FC = () => {
+type StarIconProps = {
+    isActive?: boolean
+    onClick?: VoidFunction
+}
+const StarIcon: FC<StarIconProps> = ({ isActive = true, onClick }) => {
+    const starClass = classNames(s.star, { [s.star__active]: isActive })
     return (
         <svg
+            onClick={onClick}
+            className={starClass}
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
-            className={s.imdbRating__star}
             role="presentation"
         >
             <path d="M12 17.27l4.15 2.51c.76.46 1.69-.22 1.49-1.08l-1.1-4.72 3.67-3.18c.67-.58.31-1.68-.57-1.75l-4.83-.41-1.89-4.46c-.34-.81-1.5-.81-1.84 0L9.19 8.63l-4.83.41c-.88.07-1.24 1.17-.57 1.75l3.67 3.18-1.1 4.72c-.2.86.73 1.54 1.49 1.08l4.15-2.5z"></path>
