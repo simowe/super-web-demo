@@ -1,5 +1,5 @@
 import useSWR from "swr"
-import { fetchJson } from "./swr"
+import { fetchJson, swrProps } from "./swr"
 
 export type MovieType = {
     _id: string
@@ -37,6 +37,7 @@ export function useMovie(id: string | undefined, initialData?: MovieType) {
     const apiUrl = id ? `/api/movie/${id}` : null
 
     const { data } = useSWR<MovieType>(apiUrl, fetchJson, {
+        ...swrProps,
         initialData,
     })
 
