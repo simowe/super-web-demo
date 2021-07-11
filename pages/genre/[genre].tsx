@@ -3,28 +3,25 @@ import FetchMoreButton from "client/components/FetchMoreButton"
 import MovieListSection from "client/components/MovieListSection"
 import s from "client/styles/MoviesPage.module.scss"
 import { InitialDataPage } from "client/types/InitialDataPage"
-import { serializable } from "client/utils/serializable"
-import { GetStaticPaths, GetStaticProps } from "next"
 import { useRouter } from "next/dist/client/router"
 import Head from "next/head"
-import { fetchGenre } from "pages/api/genre/[genre]"
 import { FC, Fragment } from "react"
 
-export const getStaticProps: GetStaticProps = async (context) => {
-    const genre = context.params?.genre as string
-    return {
-        props: {
-            initialData: serializable(await fetchGenre(genre)),
-        },
-    }
-}
+// export const getStaticProps: GetStaticProps = async (context) => {
+//     const genre = context.params?.genre as string
+//     return {
+//         props: {
+//             initialData: serializable(await fetchGenre(genre)),
+//         },
+//     }
+// }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-    return {
-        paths: [],
-        fallback: "blocking",
-    }
-}
+// export const getStaticPaths: GetStaticPaths = async () => {
+//     return {
+//         paths: [],
+//         fallback: "blocking",
+//     }
+// }
 
 const MoviesPage: InitialDataPage<GenreApiResult> = ({ initialData }) => {
     const { genre } = useRouter().query
