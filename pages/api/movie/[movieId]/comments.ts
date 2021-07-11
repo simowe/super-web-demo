@@ -19,6 +19,6 @@ async function fetchComments(movie_id: string) {
             movie_id: new ObjectId(movie_id),
         })
         .sort({ date: -1 })
-        .limit(10)
+        .limit(20)
         .toArray()
 }

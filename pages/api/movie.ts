@@ -19,7 +19,7 @@ export async function fetchMovies(search?: string, after?: string) {
     const data = await movies
         .find(findParams)
         .sort({ "imdb.rating": -1 })
-        .limit(10)
+        .limit(20)
         .toArray()
 
     const cursor = data[data.length - 1]?.imdb.rating
