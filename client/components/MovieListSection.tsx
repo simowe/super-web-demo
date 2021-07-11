@@ -25,6 +25,7 @@ const MovieCard: FC<MovieProps> = ({ movie }) => {
         <Link href={`/movie/${movie._id}`}>
             <a className={s.movieCard}>
                 <img
+                    loading="lazy"
                     className={s.movieCard__poster}
                     src={movie.poster}
                     alt={movie.title}
