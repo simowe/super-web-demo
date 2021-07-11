@@ -5,14 +5,15 @@ import s from "client/styles/MoviePage.module.scss"
 import { InitialDataPage } from "client/types/InitialDataPage"
 import { serializable } from "client/utils/serializable"
 import { range } from "lodash"
-import { GetStaticPaths, GetStaticProps } from "next"
+import { GetServerSideProps } from "next"
 import { useRouter } from "next/dist/client/router"
 import Head from "next/head"
 import Link from "next/link"
 import { fetchMovie } from "pages/api/movie/[movieId]"
 import { FC } from "react"
 
-export const getStaticProps: GetStaticProps = async (context) => {
+// export const getStaticProps: GetStaticProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
     const movieId = context.params?.movieId as string
     return {
         props: {
@@ -21,12 +22,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
     }
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-    return {
-        paths: [],
-        fallback: "blocking",
-    }
-}
+// export const getStaticPaths: GetStaticPaths = async () => {
+//     return {
+//         paths: [],
+//         fallback: "blocking",
+//     }
+// }
 
 const MoviePage: InitialDataPage<MovieType> = ({ initialData }) => {
     const { movieId } = useRouter().query
