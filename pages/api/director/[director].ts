@@ -1,3 +1,4 @@
+import { FilterQuery } from "mongodb"
 import type { NextApiRequest, NextApiResponse } from "next"
 import { getMoviesCollection } from "server/mongo"
 
@@ -5,48 +6,27 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<any>
 ) {
-    const { director, after } = req.query
-
-    const result = await fetchDirector(director as string, after as string)
+    const { director } = req.query
+    const result = await fetchDirector(director as string)
     res.status(200).json(result)
 }
 
-export async function fetchDirector(director: string, after?: string) {
+export async function fetchDirector(director: string) {
     const movies = await getMoviesCollection()
 
-    const findParams = getFindParams(director, after)
+    const findParams = getFindParams(director)
 
-    const data = await movies
-        .find(findParams)
-        .sort({ "imdb.rating": -1 })
-        .limit(20)
-        .toArray()
+    const data = await movies.find(findParams).sort({ released: -1 }).toArray()
 
-    const cursor = data[data.length - 1]?.imdb.rating
-    return { data, cursor }
+    return { data }
 }
 
-function getFindParams(director: string, after?: string) {
-    const commonParams = {
+function getFindParams(director: string) {
+    const params: FilterQuery<any> = {
         poster: { $ne: null },
         "imdb.rating": { $ne: "" },
+        directors: director,
     }
 
-    const directorParams = (() => {
-        if (!director) return {}
-
-        return { directors: director }
-    })()
-
-    const afterParams = (() => {
-        if (!after) return {}
-
-        return { "imdb.rating": { $lt: Number(after), $ne: "" } }
-    })()
-
-    return {
-        ...commonParams,
-        ...directorParams,
-        ...afterParams,
-    }
+    return params
 }

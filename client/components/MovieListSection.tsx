@@ -2,6 +2,7 @@ import { MovieType } from "client/apiHooks/useMovie"
 import Link from "next/link"
 import { FC, Fragment, memo } from "react"
 import s from "client/styles/MoviesPage.module.scss"
+import { getImgixUrl } from "client/utils/imgix"
 
 type MoviePageProps = {
     movies: MovieType[]
@@ -27,7 +28,7 @@ const MovieCard: FC<MovieProps> = ({ movie }) => {
                 <img
                     loading="lazy"
                     className={s.movieCard__poster}
-                    src={movie.poster}
+                    src={getImgixUrl(movie.poster)}
                     alt={movie.title}
                 />
 

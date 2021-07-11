@@ -20,6 +20,7 @@ export type MovieType = {
 export type ImdbRating = {
     rating: number
     votes: number
+    id: number
 }
 
 export type RottenTomatesRating = {

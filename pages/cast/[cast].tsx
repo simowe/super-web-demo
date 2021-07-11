@@ -1,28 +1,11 @@
-import { CastApiResult, useCastInfinite } from "client/apiHooks/useCast"
+import { CastApiResult, useCast } from "client/apiHooks/useCast"
 import { DirectorApiResult } from "client/apiHooks/useDirector"
-import FetchMoreButton from "client/components/FetchMoreButton"
 import MovieListSection from "client/components/MovieListSection"
 import s from "client/styles/MoviesPage.module.scss"
 import { InitialDataPage } from "client/types/InitialDataPage"
 import { useRouter } from "next/dist/client/router"
 import Head from "next/head"
 import { FC, Fragment } from "react"
-
-// export const getStaticProps: GetStaticProps = async (context) => {
-//     const cast = context.params?.cast as string
-//     return {
-//         props: {
-//             initialData: serializable(await fetchCast(cast)),
-//         },
-//     }
-// }
-
-// export const getStaticPaths: GetStaticPaths = async () => {
-//     return {
-//         paths: [],
-//         fallback: "blocking",
-//     }
-// }
 
 const MoviesPage: InitialDataPage<CastApiResult> = ({ initialData }) => {
     const { cast } = useRouter().query
@@ -48,18 +31,13 @@ type MoviesListProps = {
 }
 
 const MoviesList: FC<MoviesListProps> = ({ cast, initialData }) => {
-    const { data, fetchMore, isLoading } = useCastInfinite(cast, initialData)
+    const { data } = useCast(cast, initialData)
 
     if (data === undefined) return <div>loading</div>
 
-    const movies = data.map((data, index) => (
-        <MovieListSection movies={data.data} key={index} />
-    ))
-
     return (
-        <Fragment>
-            <div className={s.movies}>{movies}</div>
-            <FetchMoreButton isLoading={isLoading} fetchMore={fetchMore} />
-        </Fragment>
+        <div className={s.movies}>
+            <MovieListSection movies={data.data} />
+        </div>
     )
 }

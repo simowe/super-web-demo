@@ -1,3 +1,4 @@
+import { FilterQuery } from "mongodb"
 import type { NextApiRequest, NextApiResponse } from "next"
 import { getMoviesCollection } from "server/mongo"
 
@@ -5,48 +6,31 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<any>
 ) {
-    const { cast, after } = req.query
+    const { cast } = req.query
 
-    const result = await fetchCast(cast as string, after as string)
+    const result = await fetchCast(cast as string)
     res.status(200).json(result)
 }
 
-export async function fetchCast(cast: string, after?: string) {
+export async function fetchCast(cast: string) {
     const movies = await getMoviesCollection()
 
-    const findParams = getFindParams(cast, after)
+    const findParams = getFindParams(cast)
 
     const data = await movies
         .find(findParams)
         .sort({ "imdb.rating": -1 })
-        .limit(20)
         .toArray()
 
-    const cursor = data[data.length - 1]?.imdb.rating
-    return { data, cursor }
+    return { data }
 }
 
-function getFindParams(cast: string, after?: string) {
-    const commonParams = {
+function getFindParams(cast: string) {
+    const params: FilterQuery<any> = {
         poster: { $ne: null },
         "imdb.rating": { $ne: "" },
+        cast,
     }
 
-    const castParams = (() => {
-        if (!cast) return {}
-
-        return { cast: cast }
-    })()
-
-    const afterParams = (() => {
-        if (!after) return {}
-
-        return { "imdb.rating": { $lt: Number(after), $ne: "" } }
-    })()
-
-    return {
-        ...commonParams,
-        ...castParams,
-        ...afterParams,
-    }
+    return params
 }

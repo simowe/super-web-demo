@@ -4,6 +4,7 @@ import { useMyRating } from "client/apiHooks/useMyRating"
 import StarIcon from "client/components/StarIcon"
 import s from "client/styles/MoviePage.module.scss"
 import { InitialDataPage } from "client/types/InitialDataPage"
+import { getImgixUrl } from "client/utils/imgix"
 import { serializable } from "client/utils/serializable"
 import { range } from "lodash"
 import { GetStaticPaths, GetStaticProps } from "next"
@@ -70,7 +71,7 @@ const MovieDetails: FC<MovieProps> = ({ movie }) => {
             <div className={s.posterDescriptionSplit}>
                 <img
                     className={s.poster}
-                    src={movie.poster}
+                    src={getImgixUrl(movie.poster)}
                     alt={movie.title}
                 />
                 <MovieDescription movie={movie} />
@@ -115,14 +116,21 @@ const MovieDescription: FC<MovieProps> = ({ movie }) => {
 }
 
 const ImdbRating: FC<MovieProps> = ({ movie }) => {
-    const { rating, votes } = movie.imdb
+    const { rating, votes, id } = movie.imdb
+    const paddedId = ("0000000" + id).substr(-7)
+    const imdbUrl = `https://www.imdb.com/title/tt${paddedId}`
     return (
-        <div className={s.imdbRating}>
+        <a
+            className={s.imdbRating}
+            href={imdbUrl}
+            target="_blank"
+            rel="noreferrer"
+        >
             <StarIcon />
             <div className={s.imdbRating__rating}>{rating}</div>/
             <div className={s.imdbRating__total}>10</div>
             <div className={s.imdbRating__votes}>{votes} votes</div>
-        </div>
+        </a>
     )
 }
 

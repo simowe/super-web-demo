@@ -7,22 +7,6 @@ import { useRouter } from "next/dist/client/router"
 import Head from "next/head"
 import { FC, Fragment } from "react"
 
-// export const getStaticProps: GetStaticProps = async (context) => {
-//     const genre = context.params?.genre as string
-//     return {
-//         props: {
-//             initialData: serializable(await fetchGenre(genre)),
-//         },
-//     }
-// }
-
-// export const getStaticPaths: GetStaticPaths = async () => {
-//     return {
-//         paths: [],
-//         fallback: "blocking",
-//     }
-// }
-
 const MoviesPage: InitialDataPage<GenreApiResult> = ({ initialData }) => {
     const { genre } = useRouter().query
 

@@ -1,3 +1,4 @@
+import { FilterQuery } from "mongodb"
 import type { NextApiRequest, NextApiResponse } from "next"
 import { getMoviesCollection } from "server/mongo"
 
@@ -27,32 +28,26 @@ export async function fetchMovies(search?: string, after?: string) {
 }
 
 function getFindParams(search?: string, after?: string) {
-    const commonParams = {
+    const params: FilterQuery<any> = {
         poster: { $ne: null },
         "imdb.rating": { $ne: "" },
     }
 
-    const searchParams = (() => {
-        if (!search) return {}
-
+    if (search) {
         const logicalAndSearch = search
             .split(" ")
             .map((word) => `"${word}"`)
             .join(" ")
             .trim()
 
-        return { $text: { $search: logicalAndSearch } }
-    })()
-
-    const afterParams = (() => {
-        if (!after) return {}
-
-        return { "imdb.rating": { $lt: Number(after), $ne: "" } }
-    })()
-
-    return {
-        ...commonParams,
-        ...searchParams,
-        ...afterParams,
+        params.$text = { $search: logicalAndSearch }
+    } else {
+        params["imdb.votes"] = { $gte: 25000 }
     }
+
+    if (after) {
+        params["imdb.rating"] = { $lt: Number(after), $ne: "" }
+    }
+
+    return params
 }
