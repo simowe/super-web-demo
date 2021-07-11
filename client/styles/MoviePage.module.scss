@@ -19,7 +19,7 @@
     position: absolute;
     top: 0;
     right: 0;
-    margin: 25px 20px;
+    margin: 15px 20px;
     font-size: 20px;
     color: white;
 }
@@ -52,7 +52,7 @@
 
 .posterDescriptionSplit {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
 }
 
@@ -78,6 +78,7 @@
 .genres {
     display: flex;
     gap: 10px;
+    flex-wrap: wrap;
 
     &__genre {
         border-radius: 100px;
@@ -92,6 +93,8 @@
     display: flex;
     font-size: 30px;
     margin: 10px 0;
+    flex-wrap: wrap;
+
     // align-items: center;
 
     &__rating {

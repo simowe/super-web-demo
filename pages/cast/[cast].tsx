@@ -5,18 +5,25 @@ import MovieListSection from "client/components/MovieListSection"
 import s from "client/styles/MoviesPage.module.scss"
 import { InitialDataPage } from "client/types/InitialDataPage"
 import { serializable } from "client/utils/serializable"
-import { GetServerSideProps } from "next"
+import { GetStaticPaths, GetStaticProps } from "next"
 import { useRouter } from "next/dist/client/router"
 import Head from "next/head"
 import { fetchCast } from "pages/api/cast/[cast]"
 import { FC, Fragment } from "react"
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getStaticProps: GetStaticProps = async (context) => {
     const cast = context.params?.cast as string
     return {
         props: {
             initialData: serializable(await fetchCast(cast)),
         },
+    }
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+    return {
+        paths: [],
+        fallback: "blocking",
     }
 }
 
