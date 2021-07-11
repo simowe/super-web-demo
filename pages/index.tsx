@@ -12,7 +12,6 @@ const MoviesPage: FC = () => {
 
     return (
         <Fragment>
-            <h1>Halla sunhee!</h1>
             <NavigationBar
                 initialValue={searchQuery ?? ""}
                 onSearch={setSearchQuery}
