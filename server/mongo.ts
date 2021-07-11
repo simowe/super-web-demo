@@ -6,6 +6,7 @@ const client = new Promise<MongoClient>((resolve, reject) => {
     const client = new MongoClient(uri, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
+        minPoolSize: 2,
     })
 
     client.connect(async (err) => {
@@ -14,14 +15,18 @@ const client = new Promise<MongoClient>((resolve, reject) => {
     })
 })
 
-export async function getMongodbClient() {
-    return client
+async function getDatabase() {
+    return (await client).db("sample_mflix")
 }
 
 export async function getMoviesCollection() {
-    return (await getMongodbClient()).db("sample_mflix").collection("movies")
+    return (await getDatabase()).collection("movies")
 }
 
 export async function getRatingsCollection() {
-    return (await getMongodbClient()).db("sample_mflix").collection("ratings")
+    return (await getDatabase()).collection("ratings")
+}
+
+export async function getCommentsCollection() {
+    return (await getDatabase()).collection("comments")
 }

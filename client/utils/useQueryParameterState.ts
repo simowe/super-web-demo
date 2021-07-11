@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react"
+import Router from "next/router"
 
 type ValueType = string | undefined
 
@@ -10,10 +11,13 @@ export function useQueryParameterState(
         getQueryParameter(key) ?? defaultValue
     )
 
-    const setState = useCallback((value: ValueType) => {
-        setInternalState(value)
-        replaceQueryParameter(key, value)
-    }, [])
+    const setState = useCallback(
+        (value: ValueType) => {
+            setInternalState(value)
+            replaceQueryParameter(key, value)
+        },
+        [key]
+    )
 
     return [state, setState]
 }
@@ -32,6 +36,8 @@ function replaceQueryParameter(key: string, value: ValueType) {
     const newUrl = url.pathname + url.search
     const newState = { ...window.history.state, url: newUrl, as: newUrl }
     window.history.replaceState(newState, "", newUrl)
+
+    // Router.replace(url)
 }
 
 function getQueryParameter(key: string): ValueType {

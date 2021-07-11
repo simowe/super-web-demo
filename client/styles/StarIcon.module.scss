@@ -1,0 +1,13 @@
+.star {
+    fill: grey;
+    margin-right: 5px;
+    height: 30px;
+    width: 30px;
+    align-self: center;
+    cursor: pointer;
+
+    &__active,
+    &:hover {
+        fill: rgb(245, 197, 24);
+    }
+}

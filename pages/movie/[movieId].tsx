@@ -1,19 +1,19 @@
-import classNames from "classnames"
+import { CommentType, useComments } from "client/apiHooks/useComments"
 import { MovieType, useMovie } from "client/apiHooks/useMovie"
 import { useMyRating } from "client/apiHooks/useMyRating"
+import StarIcon from "client/components/StarIcon"
 import s from "client/styles/MoviePage.module.scss"
 import { InitialDataPage } from "client/types/InitialDataPage"
 import { serializable } from "client/utils/serializable"
 import { range } from "lodash"
-import { GetServerSideProps } from "next"
+import { GetStaticPaths, GetStaticProps } from "next"
 import { useRouter } from "next/dist/client/router"
 import Head from "next/head"
 import Link from "next/link"
 import { fetchMovie } from "pages/api/movie/[movieId]"
-import { FC } from "react"
+import { FC, Fragment, memo } from "react"
 
-// export const getStaticProps: GetStaticProps = async (context) => {
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getStaticProps: GetStaticProps = async (context) => {
     const movieId = context.params?.movieId as string
     return {
         props: {
@@ -22,12 +22,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
 }
 
-// export const getStaticPaths: GetStaticPaths = async () => {
-//     return {
-//         paths: [],
-//         fallback: "blocking",
-//     }
-// }
+export const getStaticPaths: GetStaticPaths = async () => {
+    return {
+        paths: [],
+        fallback: "blocking",
+    }
+}
 
 const MoviePage: InitialDataPage<MovieType> = ({ initialData }) => {
     const { movieId } = useRouter().query
@@ -45,8 +45,13 @@ const MoviePage: InitialDataPage<MovieType> = ({ initialData }) => {
             <Head>
                 <title>{movie.title}</title>
             </Head>
+            <div className={s.background}>
+                <div className={s.container}>
+                    <MovieDetails movie={movie} />
+                </div>
+            </div>
             <div className={s.container}>
-                <MovieDetails movie={movie} />
+                <Comments movie={movie} />
             </div>
         </main>
     )
@@ -60,19 +65,17 @@ type MovieProps = {
 
 const MovieDetails: FC<MovieProps> = ({ movie }) => {
     return (
-        <div className={s.movieDetails}>
+        <Fragment>
             <TitleBar movie={movie} />
             <div className={s.posterDescriptionSplit}>
-                <div className={s.poster}>
-                    <img
-                        className={s.poster__img}
-                        src={movie.poster}
-                        alt={movie.title}
-                    />
-                </div>
+                <img
+                    className={s.poster}
+                    src={movie.poster}
+                    alt={movie.title}
+                />
                 <MovieDescription movie={movie} />
             </div>
-        </div>
+        </Fragment>
     )
 }
 
@@ -195,22 +198,40 @@ const Credit: FC<CreditProps> = ({ title, name }) => {
     )
 }
 
-type StarIconProps = {
-    isActive?: boolean
-    onClick?: VoidFunction
+const Comments: FC<MovieProps> = memo(({ movie }) => {
+    const { comments } = useComments(movie._id)
+
+    if (comments === undefined) return null
+    if (comments.length === 0) return null
+
+    const commentElements = comments.map((comment, index) => (
+        <Comment comment={comment} key={index} />
+    ))
+
+    return (
+        <div className={s.comments}>
+            <h2>Comments</h2>
+            {commentElements}
+        </div>
+    )
+})
+
+type CommentProps = {
+    comment: CommentType
 }
 
-const StarIcon: FC<StarIconProps> = ({ isActive = true, onClick }) => {
-    const starClass = classNames(s.star, { [s.star__active]: isActive })
+const Comment: FC<CommentProps> = ({ comment }) => {
     return (
-        <svg
-            onClick={onClick}
-            className={starClass}
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            role="presentation"
-        >
-            <path d="M12 17.27l4.15 2.51c.76.46 1.69-.22 1.49-1.08l-1.1-4.72 3.67-3.18c.67-.58.31-1.68-.57-1.75l-4.83-.41-1.89-4.46c-.34-.81-1.5-.81-1.84 0L9.19 8.63l-4.83.41c-.88.07-1.24 1.17-.57 1.75l3.67 3.18-1.1 4.72c-.2.86.73 1.54 1.49 1.08l4.15-2.5z"></path>
-        </svg>
+        <div className={s.comment}>
+            <div className={s.comment__name}>{comment.name}</div>
+            <div className={s.comment__date}>{formatData(comment.date)}</div>
+            <div className={s.comment__text}>{comment.text}</div>
+        </div>
     )
+}
+
+function formatData(date: string) {
+    return new Intl.DateTimeFormat([], {
+        dateStyle: "full",
+    }).format(new Date(date))
 }
