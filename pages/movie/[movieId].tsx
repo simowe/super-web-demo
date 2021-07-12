@@ -1,6 +1,8 @@
 import { CommentType, useComments } from "client/apiHooks/useComments"
 import { MovieType, useMovie } from "client/apiHooks/useMovie"
 import { useMyRating } from "client/apiHooks/useMyRating"
+import IfVisible from "client/components/IfVisible"
+import Loading from "client/components/Loading"
 import StarIcon from "client/components/StarIcon"
 import s from "client/styles/MoviePage.module.scss"
 import { InitialDataPage } from "client/types/InitialDataPage"
@@ -51,9 +53,14 @@ const MoviePage: InitialDataPage<MovieType> = ({ initialData }) => {
                     <MovieDetails movie={movie} />
                 </div>
             </div>
-            <div className={s.container}>
-                <Comments movie={movie} />
-            </div>
+
+            <IfVisible fallback={<Loading />}>
+                <div className={s.container}>
+                    <div className={s.comments}>
+                        <Comments movie={movie} />
+                    </div>
+                </div>
+            </IfVisible>
         </main>
     )
 }
@@ -210,17 +217,17 @@ const Comments: FC<MovieProps> = memo(({ movie }) => {
     const { comments } = useComments(movie._id)
 
     if (comments === undefined) return null
-    if (comments.length === 0) return null
+    if (comments.length === 0) return <h2>No comments</h2>
 
     const commentElements = comments.map((comment, index) => (
         <Comment comment={comment} key={index} />
     ))
 
     return (
-        <div className={s.comments}>
+        <Fragment>
             <h2>Comments</h2>
             {commentElements}
-        </div>
+        </Fragment>
     )
 })
 

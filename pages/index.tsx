@@ -1,5 +1,7 @@
 import { useMoviesInfinite } from "client/apiHooks/useMovies"
 import FetchMoreButton from "client/components/FetchMoreButton"
+import IfVisible from "client/components/IfVisible"
+import Loading from "client/components/Loading"
 import MovieListSection from "client/components/MovieListSection"
 import NavigationBar from "client/components/NavigationBar"
 import s from "client/styles/MoviesPage.module.scss"
@@ -44,7 +46,9 @@ const MoviesList: FC<MoviesListProps> = ({ searchQuery }) => {
     return (
         <Fragment>
             <div className={s.movies}>{movies}</div>
-            <FetchMoreButton isLoading={isLoading} fetchMore={fetchMore} />
+            {/* <FetchMoreButton isLoading={isLoading} fetchMore={fetchMore} /> */}
+            <IfVisible onIsVisible={fetchMore} key={movies.length} />
+            <Loading isLoading={isLoading} />
         </Fragment>
     )
 }
