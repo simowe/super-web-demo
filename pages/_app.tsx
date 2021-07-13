@@ -6,7 +6,7 @@ import { Fragment } from "react"
 function MyApp({ Component, pageProps }: AppProps) {
     return <Fragment>
         <Head>
-            <meta name="robots" content="noindex">
+            <meta name="robots" content="noindex" />
         </Head>
         <Component {...pageProps} />
     </Fragment>
