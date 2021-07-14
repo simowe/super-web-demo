@@ -8,6 +8,7 @@ export default async function handler(
 ) {
     const { movieId } = req.query
     const movie = await fetchMovie(movieId as string)
+    res.setHeader("Access-Control-Allow-Origin", "*")
     res.status(200).json(movie)
 }
 
