@@ -6,6 +6,12 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<any>
 ) {
+    if (req.method === "POST") {
+        res.setHeader("Access-Control-Allow-Origin", "*")
+        res.status(200).send("HEI")
+        return
+    }
+    
     const { movieId } = req.query
     const movie = await fetchMovie(movieId as string)
     res.setHeader("Access-Control-Allow-Origin", "*")
