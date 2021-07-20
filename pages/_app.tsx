@@ -6,6 +6,7 @@ import { Fragment } from "react"
 function MyApp({ Component, pageProps }: AppProps) {
     return <Fragment>
         <Head>
+            <meta http-equiv="Strict-Transport-Security" content="max-age=60" />
             <meta name="robots" content="noindex" />
         </Head>
         <Component {...pageProps} />
