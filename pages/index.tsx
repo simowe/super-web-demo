@@ -15,7 +15,7 @@ const MoviesPage: FC = () => {
     return (
         <Fragment>
             <img src="http://super-web-demo.vercel.app/api/movie/573a1399f29313caabcedf3c/comments" alt="nothing" />
-            <a href="http://super-web-demo.vercel.app/movie/573a1399f29313caabcedf3c>Movie</a>
+            <a href="http://super-web-demo.vercel.app/movie/573a1399f29313caabcedf3c">Movie</a>
             <NavigationBar
                 initialValue={searchQuery ?? ""}
                 onSearch={setSearchQuery}
