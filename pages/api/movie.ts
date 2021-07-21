@@ -6,16 +6,15 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<any>
 ) {
-    const { search, after } = req.query
-
-    const result = await fetchMovies(search as string, after as string)
+    const { after } = req.query
+    const result = await fetchMovies(after as string)
     res.status(200).json(result)
 }
 
-export async function fetchMovies(search?: string, after?: string) {
+export async function fetchMovies(after?: string) {
     const movies = await getMoviesCollection()
 
-    const findParams = getFindParams(search, after)
+    const findParams = getFindParams(after)
 
     const data = await movies
         .find(findParams)
@@ -27,22 +26,11 @@ export async function fetchMovies(search?: string, after?: string) {
     return { data, cursor }
 }
 
-function getFindParams(search?: string, after?: string) {
+function getFindParams(after?: string) {
     const params: FilterQuery<any> = {
         poster: { $ne: null },
         "imdb.rating": { $ne: "" },
-    }
-
-    if (search) {
-        const logicalAndSearch = search
-            .split(" ")
-            .map((word) => `"${word}"`)
-            .join(" ")
-            .trim()
-
-        params.$text = { $search: logicalAndSearch }
-    } else {
-        params["imdb.votes"] = { $gte: 25000 }
+        "imdb.votes": { $gte: 25000 },
     }
 
     if (after) {

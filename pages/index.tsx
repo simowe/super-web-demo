@@ -1,4 +1,5 @@
 import { useMoviesInfinite } from "client/apiHooks/useMovies"
+import { useSearch } from "client/apiHooks/useSearch"
 import IfVisible from "client/components/IfVisible"
 import Loading from "client/components/Loading"
 import MovieListSection from "client/components/MovieListSection"
@@ -21,7 +22,7 @@ const MoviesPage: FC = () => {
                 <Head>
                     <title>Movies</title>
                 </Head>
-                <MoviesList searchQuery={searchQuery} />
+                <Switcher searchQuery={searchQuery} />
             </main>
         </Fragment>
     )
@@ -29,13 +30,20 @@ const MoviesPage: FC = () => {
 
 export default MoviesPage
 
-type MoviesListProps = {
+type SwitcherProps = {
     searchQuery: string | undefined
 }
 
-const MoviesList: FC<MoviesListProps> = ({ searchQuery }) => {
-    const { data, fetchMore, isLoading, isEmpty, error } =
-        useMoviesInfinite(searchQuery)
+const Switcher: FC<SwitcherProps> = ({ searchQuery }) => {
+    if (searchQuery) {
+        return <SearchList searchQuery={searchQuery} />
+    } else {
+        return <InfiniteList />
+    }
+}
+
+const InfiniteList: FC = () => {
+    const { data, fetchMore, isLoading, isEmpty, error } = useMoviesInfinite()
 
     if (error) return <div>Fucked up</div>
     if (!data) return <div>loading</div>
@@ -51,5 +59,23 @@ const MoviesList: FC<MoviesListProps> = ({ searchQuery }) => {
             <IfVisible onIsVisible={fetchMore} key={movies.length} />
             <Loading isLoading={isLoading} />
         </Fragment>
+    )
+}
+
+type SearchListProps = {
+    searchQuery: string
+}
+
+const SearchList: FC<SearchListProps> = ({ searchQuery }) => {
+    const { data, error } = useSearch(searchQuery)
+
+    if (error) return <div>Fucked up</div>
+    if (!data) return <div>loading</div>
+    if (data.data.length === 0) return <div>Empty</div>
+
+    return (
+        <div className={s.movies}>
+            <MovieListSection movies={data.data} />
+        </div>
     )
 }

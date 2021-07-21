@@ -1,4 +1,6 @@
-export function getImgixUrl(imageUrl: string) {
+export function getImgixUrl(imageUrl: string | undefined) {
+    if (imageUrl === undefined) return ""
+
     const originalBase = "https://m.media-amazon.com/images/M/"
     const imgixBase = "https://super-web-demo.imgix.net/"
 

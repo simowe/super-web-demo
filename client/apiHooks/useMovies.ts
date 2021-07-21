@@ -8,13 +8,10 @@ export type MoviesApiResult = {
     cursor: string | null
 }
 
-export function useMoviesInfinite(
-    search?: string,
-    initialData?: MoviesApiResult
-) {
+export function useMoviesInfinite(initialData?: MoviesApiResult) {
     const getUrl = (data: MoviesApiResult | null) => {
         if (data?.cursor === null) return null
-        return `/api/movie${queryParams({ search, after: data?.cursor })}`
+        return `/api/movie${queryParams({ after: data?.cursor })}`
     }
 
     return useSWRInfiniteHelper<MoviesApiResult>(getUrl, fetchJson, {

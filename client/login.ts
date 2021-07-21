@@ -10,6 +10,10 @@ function setApiToken(apiToken: string) {
     localStorage.setItem(API_TOKEN_STORAGE_KEY, apiToken)
 }
 
+export function isUserLoggedIn() {
+    return !!getApiToken()
+}
+
 export async function loginUser() {
     const firebaseIdToken = await loginWithFirebase()
     const apiToken = await loginWithApi(firebaseIdToken)

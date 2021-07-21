@@ -2,21 +2,30 @@ import { MongoClient } from "mongodb"
 
 const uri = process.env.MONGODB_CONNECTION_STRING!
 
-const client = new Promise<MongoClient>((resolve, reject) => {
-    const client = new MongoClient(uri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        minPoolSize: 2,
-    })
+//@ts-ignore
+console.log("Has existing connection", !!global.mongodbConnection)
 
-    client.connect(async (err) => {
-        if (err) reject(err)
-        else resolve(client)
+//@ts-ignore
+if (global.mongodbConnection === undefined) {
+    //@ts-ignore
+    global.mongodbConnection = new Promise<MongoClient>((resolve, reject) => {
+        console.log("Connecting to mongo")
+        const client = new MongoClient(uri, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            // minPoolSize: 2,
+        })
+
+        client.connect(async (err) => {
+            if (err) reject(err)
+            else resolve(client)
+        })
     })
-})
+}
 
 async function getDatabase() {
-    return (await client).db("sample_mflix")
+    //@ts-ignore
+    return (await global.mongodbConnection).db("sample_mflix")
 }
 
 export async function getMoviesCollection() {

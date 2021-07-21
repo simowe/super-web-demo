@@ -16,21 +16,21 @@ import Link from "next/link"
 import { fetchMovie } from "pages/api/movie/[movieId]"
 import { FC, Fragment, memo } from "react"
 
-export const getStaticProps: GetStaticProps = async (context) => {
-    const movieId = context.params?.movieId as string
-    return {
-        props: {
-            initialData: serializable(await fetchMovie(movieId)),
-        },
-    }
-}
+// export const getStaticProps: GetStaticProps = async (context) => {
+//     const movieId = context.params?.movieId as string
+//     return {
+//         props: {
+//             initialData: serializable(await fetchMovie(movieId)),
+//         },
+//     }
+// }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-    return {
-        paths: [],
-        fallback: "blocking",
-    }
-}
+// export const getStaticPaths: GetStaticPaths = async () => {
+//     return {
+//         paths: [],
+//         fallback: "blocking",
+//     }
+// }
 
 const MoviePage: InitialDataPage<MovieType> = ({ initialData }) => {
     const { movieId } = useRouter().query

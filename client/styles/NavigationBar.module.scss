@@ -2,6 +2,7 @@
     max-width: 1000px;
     margin: 0 auto;
     display: flex;
+    position: relative;
 }
 
 .search {
@@ -32,4 +33,40 @@
     border: 1px solid black;
     border-radius: 15px;
     cursor: pointer;
+}
+
+.autocomplete {
+    position: absolute;
+    top: 75%;
+    width: 100%;
+    border: 1px solid lightgrey;
+    padding: 0;
+    overflow: hidden;
+
+    border-radius: 15px;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    background: white;
+
+    &_item {
+        margin: 0;
+        list-style: none;
+        padding: 10px 20px;
+        display: block;
+        cursor: pointer;
+
+        &__active,
+        &:hover {
+            background: lightgrey;
+        }
+    }
+
+    &_itemTitle {
+    }
+
+    &_itemYear {
+        margin-left: 5px;
+        font-weight: 400;
+    }
 }

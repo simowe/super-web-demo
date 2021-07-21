@@ -1,3 +1,4 @@
+import { isUserLoggedIn, loginUser } from "client/login"
 import { useCallback } from "react"
 import useSWR from "swr"
 import { fetchJsonAuth, getAuthHeaders, swrProps } from "./swr"
@@ -14,6 +15,7 @@ export function useMyRating(id: string | undefined) {
     const updateRating = useCallback(
         async (rating: number) => {
             if (apiUrl === null) return
+            if (!isUserLoggedIn()) await loginUser()
 
             mutate({ rating }, false)
             mutate(rateMovie(apiUrl, rating), false)
