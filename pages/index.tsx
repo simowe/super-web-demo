@@ -1,5 +1,4 @@
 import { useMoviesInfinite } from "client/apiHooks/useMovies"
-import FetchMoreButton from "client/components/FetchMoreButton"
 import IfVisible from "client/components/IfVisible"
 import Loading from "client/components/Loading"
 import MovieListSection from "client/components/MovieListSection"
@@ -14,8 +13,6 @@ const MoviesPage: FC = () => {
 
     return (
         <Fragment>
-            <img src="http://super-web-demo.vercel.app/api/movie/573a1399f29313caabcedf3c/comments" alt="nothing" />
-            <a href="http://super-web-demo.vercel.app/movie/573a1399f29313caabcedf3c">Movie</a>
             <NavigationBar
                 initialValue={searchQuery ?? ""}
                 onSearch={setSearchQuery}
@@ -48,7 +45,6 @@ const MoviesList: FC<MoviesListProps> = ({ searchQuery }) => {
     return (
         <Fragment>
             <div className={s.movies}>{movies}</div>
-            {/* <FetchMoreButton isLoading={isLoading} fetchMore={fetchMore} /> */}
             <IfVisible onIsVisible={fetchMore} key={movies.length} />
             <Loading isLoading={isLoading} />
         </Fragment>
