@@ -23,7 +23,7 @@ export async function fetchMovies(search?: string, after?: string) {
         .limit(20)
         .toArray()
 
-    const cursor = data[data.length - 1]?.imdb.rating
+    const cursor = data[data.length - 1]?.imdb.rating ?? null
     return { data, cursor }
 }
 

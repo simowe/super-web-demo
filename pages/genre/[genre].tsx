@@ -31,9 +31,14 @@ type MoviesListProps = {
 }
 
 const MoviesList: FC<MoviesListProps> = ({ genre, initialData }) => {
-    const { data, fetchMore, isLoading } = useGenreInfinite(genre, initialData)
+    const { data, fetchMore, isLoading, isEmpty, error } = useGenreInfinite(
+        genre,
+        initialData
+    )
 
-    if (data === undefined) return <div>loading</div>
+    if (error) return <div>Fucked up</div>
+    if (!data) return <div>loading</div>
+    if (isEmpty) return <div>Empty</div>
 
     const movies = data.map((data, index) => (
         <MovieListSection movies={data.data} key={index} />

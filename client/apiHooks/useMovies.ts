@@ -5,16 +5,20 @@ import { MovieType } from "./useMovie"
 
 export type MoviesApiResult = {
     data: MovieType[]
-    cursor?: string
+    cursor: string | null
 }
 
 export function useMoviesInfinite(
     search?: string,
     initialData?: MoviesApiResult
 ) {
-    return useSWRInfiniteHelper<MoviesApiResult>(
-        (data) => `/api/movie${queryParams({ search, after: data?.cursor })}`,
-        fetchJson,
-        { ...swrProps, initialData: initialData ? [initialData] : undefined }
-    )
+    const getUrl = (data: MoviesApiResult | null) => {
+        if (data?.cursor === null) return null
+        return `/api/movie${queryParams({ search, after: data?.cursor })}`
+    }
+
+    return useSWRInfiniteHelper<MoviesApiResult>(getUrl, fetchJson, {
+        ...swrProps,
+        initialData: initialData ? [initialData] : undefined,
+    })
 }

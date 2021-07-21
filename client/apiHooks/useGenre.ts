@@ -8,19 +8,21 @@ import { MovieType } from "./useMovie"
 
 export type GenreApiResult = {
     data: MovieType[]
-    cursor?: string
+    cursor: string | null
 }
 
 export function useGenreInfinite(
     genre: string | undefined,
     initialData?: GenreApiResult
 ) {
-    return useSWRInfiniteHelper<GenreApiResult>(
-        (data) => {
-            if (genre === undefined) return null
-            return `/api/genre/${genre}${queryParams({ after: data?.cursor })}`
-        },
-        fetchJson,
-        { ...swrProps, initialData: inArrayIfExists(initialData) }
-    )
+    const getUrl = (data: GenreApiResult | null) => {
+        if (genre === undefined) return null
+        if (data?.cursor === null) return null
+        return `/api/genre/${genre}${queryParams({ after: data?.cursor })}`
+    }
+
+    return useSWRInfiniteHelper<GenreApiResult>(getUrl, fetchJson, {
+        ...swrProps,
+        initialData: inArrayIfExists(initialData),
+    })
 }
