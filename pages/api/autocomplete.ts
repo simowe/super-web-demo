@@ -24,9 +24,6 @@ export async function fetchAutocompleteResults(query?: string) {
                 query,
                 path: "title",
                 tokenOrder: "sequential",
-                fuzzy: {
-                    maxEdits: 1,
-                },
             },
         },
     }
