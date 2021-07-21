@@ -9,7 +9,7 @@ export type AutocompleteApiResult = {
 }
 
 export function useAutocomplete(query: string) {
-    const url = `/api/autocomplete${queryParams({ query })}`
+    const url = query ? `/api/autocomplete${queryParams({ query })}` : null
 
     const fallbackData = useRef<AutocompleteApiResult>()
 
