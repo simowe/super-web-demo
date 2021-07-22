@@ -7,11 +7,11 @@ export default async function handler(
 ) {
     const { query } = req.query
 
-    const result = await fetchSearchResults(query as string)
+    const result = await fetchGenres(query as string)
     res.status(200).json(result)
 }
 
-export async function fetchSearchResults(query?: string) {
+export async function fetchGenres(query?: string) {
     const movies = await getMoviesCollection()
 
     const searchAggregation = {
@@ -19,24 +19,17 @@ export async function fetchSearchResults(query?: string) {
             index: "movies",
 
             compound: {
-                minimumShouldMatch: 1,
-                should: [
+                must: [
                     {
-                        phrase: {
-                            query,
-                            path: "title",
+                        text: {
+                            query: "drama",
+                            path: "genres",
                         },
                     },
                     {
-                        phrase: {
-                            query,
-                            path: "cast",
-                        },
-                    },
-                    {
-                        phrase: {
-                            query,
-                            path: "directors",
+                        text: {
+                            query: "comedy",
+                            path: "genres",
                         },
                     },
                 ],
@@ -44,9 +37,12 @@ export async function fetchSearchResults(query?: string) {
         },
     }
 
+    const before = Date.now()
     const data = await movies
-        .aggregate([searchAggregation, { $limit: 50 }])
+        .aggregate([searchAggregation, { $limit: 10 }])
         .toArray()
 
-    return { data }
+    console.log("Genres atlas:", Date.now() - before, "ms")
+
+    return data
 }
