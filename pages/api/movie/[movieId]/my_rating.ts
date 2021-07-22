@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb"
 import type { NextApiRequest, NextApiResponse } from "next"
 import { benchmark } from "server/benchmark"
 import { verifyAuthorizationHeader } from "server/jwt"
@@ -62,7 +63,7 @@ async function changeMyRating(
     await ratings.updateOne(
         {
             user_id,
-            movie_id,
+            movie_id: new ObjectId(movie_id),
         },
         { $set: { rating } },
         { upsert: true }
