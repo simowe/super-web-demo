@@ -2,13 +2,10 @@ import { MongoClient } from "mongodb"
 
 const uri = process.env.MONGODB_CONNECTION_STRING!
 
-//@ts-ignore
-console.log("Has existing connection", !!global.mongodbConnection)
+const g = global as any
 
-//@ts-ignore
-if (global.mongodbConnection === undefined) {
-    //@ts-ignore
-    global.mongodbConnection = new Promise<MongoClient>((resolve, reject) => {
+if (g.mongodbConnection === undefined) {
+    g.mongodbConnection = new Promise<MongoClient>((resolve, reject) => {
         console.log("Connecting to mongo")
         const client = new MongoClient(uri, {
             useNewUrlParser: true,
@@ -24,8 +21,7 @@ if (global.mongodbConnection === undefined) {
 }
 
 async function getDatabase() {
-    //@ts-ignore
-    return (await global.mongodbConnection).db("sample_mflix")
+    return (await g.mongodbConnection).db("sample_mflix")
 }
 
 export async function getMoviesCollection() {
