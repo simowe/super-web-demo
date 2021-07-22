@@ -12,13 +12,13 @@ type NavigationBarProps = {
 
 const NavigationBar: FC<NavigationBarProps> = ({ onSearch, initialValue }) => {
     const [value, setValue] = useState(initialValue)
-    const [isAutocompleteVisible, setIsAutocompleteVisible] = useState(false)
+    const [isAutocompleteVisible, setIsAutocompleteVisible] = useState(true)
 
     const triggerSearch = useCallback(
         (value: string) => {
             setValue(value)
             onSearch(value)
-            // setIsAutocompleteVisible(false)
+            setIsAutocompleteVisible(false)
         },
         [onSearch]
     )
