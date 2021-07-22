@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next"
+import { benchmark } from "server/benchmark"
 import { getMoviesCollection } from "server/mongo"
 
 export default async function handler(
@@ -44,9 +45,9 @@ export async function fetchSearchResults(query?: string) {
         },
     }
 
-    const data = await movies
-        .aggregate([searchAggregation, { $limit: 50 }])
-        .toArray()
+    const data = await benchmark("Atlas search", async () =>
+        movies.aggregate([searchAggregation, { $limit: 50 }]).toArray()
+    )
 
     return { data }
 }

@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next"
+import { benchmark } from "server/benchmark"
 import { getMoviesCollection } from "server/mongo"
 
 export default async function handler(
@@ -9,7 +10,9 @@ export default async function handler(
     if (!query) {
         res.status(200).json({ data: [] })
     } else {
-        const result = await fetchAutocompleteResults(query as string)
+        const result = await benchmark("Atlas autocomplete", () =>
+            fetchAutocompleteResults(query as string)
+        )
         res.status(200).json(result)
     }
 }

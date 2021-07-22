@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next"
+import { benchmark } from "server/benchmark"
 import { verifyAuthorizationHeader } from "server/jwt"
 import { getRatingsCollection } from "server/mongo"
 
@@ -13,7 +14,9 @@ export default async function handler(
         const user_id = user.user_id
 
         const get = async () => {
-            const rating = await fetchMyRating(user_id, movie_id)
+            const rating = await benchmark("fetchMyRating", () =>
+                fetchMyRating(user_id, movie_id)
+            )
             res.status(200).json({ rating })
         }
 

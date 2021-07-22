@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb"
 import type { NextApiRequest, NextApiResponse } from "next"
+import { benchmark } from "server/benchmark"
 import { getMoviesCollection } from "server/mongo"
 
 export default async function handler(
@@ -11,9 +12,11 @@ export default async function handler(
         res.status(200).send("HEI")
         return
     }
-    
+
     const { movieId } = req.query
-    const movie = await fetchMovie(movieId as string)
+    const movie = await benchmark("fetchMovie", () =>
+        fetchMovie(movieId as string)
+    )
     res.setHeader("Access-Control-Allow-Origin", "*")
     res.status(200).json(movie)
 }

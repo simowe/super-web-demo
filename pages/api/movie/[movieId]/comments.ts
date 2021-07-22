@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb"
 import type { NextApiRequest, NextApiResponse } from "next"
+import { benchmark } from "server/benchmark"
 import { getCommentsCollection } from "server/mongo"
 
 export default async function handler(
@@ -7,7 +8,9 @@ export default async function handler(
     res: NextApiResponse<any>
 ) {
     const movie_id = req.query.movieId as string
-    const comments = await fetchComments(movie_id)
+    const comments = await benchmark("fetchComments", () =>
+        fetchComments(movie_id)
+    )
     res.status(200).json(comments)
 }
 

@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next"
+import { benchmark } from "server/benchmark"
 import { getMoviesCollection } from "server/mongo"
 
 export default async function handler(
@@ -37,12 +38,9 @@ export async function fetchGenres(query?: string) {
         },
     }
 
-    const before = Date.now()
-    const data = await movies
-        .aggregate([searchAggregation, { $limit: 10 }])
-        .toArray()
+    const data = await benchmark("Genres atlas", () =>
+        movies.aggregate([searchAggregation, { $limit: 10 }]).toArray()
+    )
 
-    console.log("Genres atlas:", Date.now() - before, "ms")
-
-    return data
+    return { data }
 }

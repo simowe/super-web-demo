@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next"
+import { benchmark } from "server/benchmark"
 import { getMoviesCollection } from "server/mongo"
 
 export default async function handler(
@@ -18,9 +19,9 @@ export async function fetchGenres(query?: string) {
         genres: { $all: ["Drama", "Comedy"] },
     }
 
-    const before = Date.now()
-    const data = await movies.find(findParams).limit(10).toArray()
-    console.log("Genres mongo:", Date.now() - before, "ms")
+    const data = await benchmark("Genres mongo", () =>
+        movies.find(findParams).limit(10).toArray()
+    )
 
-    return data
+    return { data }
 }

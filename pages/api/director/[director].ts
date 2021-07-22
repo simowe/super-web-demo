@@ -1,5 +1,6 @@
 import { FilterQuery } from "mongodb"
 import type { NextApiRequest, NextApiResponse } from "next"
+import { benchmark } from "server/benchmark"
 import { getMoviesCollection } from "server/mongo"
 
 export default async function handler(
@@ -7,7 +8,9 @@ export default async function handler(
     res: NextApiResponse<any>
 ) {
     const { director } = req.query
-    const result = await fetchDirector(director as string)
+    const result = await benchmark("fetchDirector", () =>
+        fetchDirector(director as string)
+    )
     res.status(200).json(result)
 }
 
