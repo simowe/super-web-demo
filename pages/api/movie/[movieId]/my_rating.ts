@@ -46,7 +46,7 @@ async function fetchMyRating(user_id: string, movie_id: string) {
     return (
         await ratings.findOne({
             user_id,
-            movie_id,
+            movie_id: new ObjectId(movie_id),
         })
     )?.rating
 }
